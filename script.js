@@ -29,24 +29,22 @@ function startGame(){
     while (gameWinner == "n"){
         // Placing Move
         let move = getTurn(player);
+        // alert("getTurn finished, move to placeTurn.");
         placeTurn(player, move);
+        // alert("placeTurn finished, move to displayBoard.");
         // Board Display
         displayBoard();
         if (checkWinner(player, move) == true) gameWinner = player;
-        else if (!board.includes("-")) gameWinner = "d";
+        else if (!isntFull()) {
+            alert(board);
+            // alert(board.includes("-"));
+            gameWinner = "d";
+        }
         if (player == "x") player = "o";
         else player = "x";
     }
     if (gameWinner == "d"){
         alert("DRAW!");
-        prompt("How do you feel?");
-        alert("actually I don't care!")
-        let again = confirm("Wanna play again?")
-        if (again == true){
-            alert("Let's do it!")
-            startGame();
-        }
-        else alert("a");
     }
 }
 
@@ -54,8 +52,8 @@ function startGame(){
 // placeTurn:
 //      Places the specified player's move, converting their single digit (move) to two separate numbers. One for the row, and the other for the column.
 function placeTurn(player, move){
-    for (let row = 0; row = 2; row++){
-        for (let col = 0; col = 2; col++){
+    for (let row = 0; row <= 2; row++){
+        for (let col = 0; col <= 2; col++){
             if (hBoard[row][col] == move){
                 board[row][col] = player;
             }
@@ -63,13 +61,21 @@ function placeTurn(player, move){
     }
 }
 
+function isntFull(){
+    for (let row = 0; row <= 2; row++){
+        for (let col = 0; col <= 2; col++){
+            if (board[row][col] == "-") return true;   
+        }
+    }
+    return false;
+}
 
 // displayBoard:
 //      Displays the board in the typical 2D Tic Tac Toe fashion.
 function displayBoard(){
     let boardDisplay = "";
-    for (let row = 0; row = 2; row++){
-        for (let col = 0; col = 2; col++){
+    for (let row = 0; row <= 2; row++){
+        for (let col = 0; col <= 2; col++){
             boardDisplay += board[row][col]
             if (col < 2){
                 boardDisplay += " | ";
@@ -85,7 +91,6 @@ function displayBoard(){
 function getTurn(player){
     player = player.toUpperCase();
     let move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
-    // alert(board[move - 1] + legalMove(move))
     while (isNaN(move)) {
         alert("The specified message was not a valid space. Let's try that again!");
         move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
@@ -104,8 +109,8 @@ function getTurn(player){
 // legalMove:
 //      Validates player's move, checking whether the space is real or not and if the space is taken.
 function legalMove(move){
-    for (let row = 0; row = 2; row++){
-        for (let col = 0; col = 2; col++){
+    for (let row = 0; row <= 2; row++){
+        for (let col = 0; col <= 2; col++){
             if (hBoard[row][col] == move){
                 if (board[row][col] != "-") return false;
             }
@@ -119,7 +124,7 @@ function legalMove(move){
 //      More of a subfunction, used within checkWinner to look for any winning patterns using our board arrays.
 function checkSet(move, target){
     let win = false;
-    for (let row = 0; row = 2; row++){
+    for (let row = 0; row <= 2; row++){
         switch (target){
             case "h":
                 testArray = hBoard[row];
@@ -131,7 +136,6 @@ function checkSet(move, target){
                 testArray = dBoard[row];
                 break;
         }
-        testArray = hBoard[row];
         if (testArray.includes(move) == true){
             if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
         }
