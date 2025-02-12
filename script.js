@@ -29,12 +29,14 @@ function startGame(){
     while (gameWinner == "n"){
         // Placing Move
         let move = getTurn(player);
+        if (move == 0) break;
         // alert("getTurn finished, move to placeTurn.");
         placeTurn(player, move);
         // alert("placeTurn finished, move to displayBoard.");
         // Board Display
-        alert(displayBoard());
-        if (checkWinner(player, move) == true) gameWinner = player;
+        alert("Checking winner for " + displayBoard());
+        // JW: function checkWinner(move){
+        if (checkWinner(move, player)) gameWinner = player;
         else if (!isntFull()) {
             alert(board);
             // alert(board.includes("-"));
@@ -73,7 +75,7 @@ function isntFull(){
 // displayBoard:
 //      Displays the board in the typical 2D Tic Tac Toe fashion.
 function displayBoard(){
-    let boardDisplay = "";
+    let boardDisplay = "\n";
     for (let row = 0; row <= 2; row++){
         for (let col = 0; col <= 2; col++){
             boardDisplay += board[row][col]
@@ -92,6 +94,7 @@ function displayBoard(){
 function getTurn(player){
     player = player.toUpperCase();
     let move = parseInt(prompt(displayBoard() + "Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
+    if (move == 0) return 0;
     while (isNaN(move)) {
         alert("The specified message was not a valid space. Let's try that again!");
         move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
@@ -123,7 +126,7 @@ function legalMove(move){
 
 // checkSet:
 //      More of a subfunction, used within checkWinner to look for any winning patterns using our board arrays.
-function checkSet(move, target){
+function checkSet(player, move, target){
     let win = false;
     for (let row = 0; row <= 2; row++){
         switch (target){
@@ -137,8 +140,10 @@ function checkSet(move, target){
                 testArray = dBoard[row];
                 break;
         }
-        if (testArray.includes(move) == true){
-            if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
+        if (testArray.includes(move)){
+            console.log("Testing " + testArray.toString() + " includes "+move);
+            /* New Function: Check board for player values in testArray correspondences */
+            // if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
         }
     }
     return win;
@@ -146,11 +151,18 @@ function checkSet(move, target){
 
 // checkWinner:
 //      Uses checkSet() for all combinations of winning.
-function checkWinner(move){
+function checkWinner(move, player){
     // Winner variable deprecated
-    if (checkSet(move, hBoard) == true) return true;
+    if (checkSet(player, move, hBoard)) return true;
+    if (checkSet(player, move, vBoard)) return true;
+    if (checkSet(player, move, dBoard)) return true;
+    return false;
     // I DIDN'T KNOW YOU COULD STACK IFS LIKE THIS WHAT THE SIGMA?
-    else if (move < 4 == true) if (checkSet(move, vBoard) == true) return true;
-    else if (move % 2 == 1) if (checkSet(move, dBoard) == true) return true;
-    else return false;
+    // JW: I do not think you can, actually.  I changed it to include {} - show me where you
+    // else if (move < 4) {
+    //     if (checkSet(move, vBoard)) return true;
+    // }
+    // else if (move % 2 == 1) {
+    //     if (checkSet(move, dBoard)) return true;
+    // }
 }
