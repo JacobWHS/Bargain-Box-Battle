@@ -33,7 +33,7 @@ function startGame(){
         placeTurn(player, move);
         // alert("placeTurn finished, move to displayBoard.");
         // Board Display
-        displayBoard();
+        alert(displayBoard());
         if (checkWinner(player, move) == true) gameWinner = player;
         else if (!isntFull()) {
             alert(board);
@@ -83,25 +83,26 @@ function displayBoard(){
         }
         boardDisplay += "\n";
     }
-    alert(boardDisplay);
+    //alert(boardDisplay);
+    return boardDisplay;
 }
 
 // getTurn:
 //      Prompts the player to make their turn, validates and returns it.
 function getTurn(player){
     player = player.toUpperCase();
-    let move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
+    let move = parseInt(prompt(displayBoard() + "Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
     while (isNaN(move)) {
         alert("The specified message was not a valid space. Let's try that again!");
-        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
+        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
     }
     while (goodMoves.includes(move) == false) {
         alert("The specified number " + move + " was not a valid space. Let's try that again!");
-        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
+        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."  + displayBoard()));
     }
     while (legalMove(move) != true) {
         alert("Uh oh! This spot seems to be taken, please try again.");
-        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
+        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
     }
     return move;
 }
