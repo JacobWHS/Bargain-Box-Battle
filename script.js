@@ -28,6 +28,7 @@ var dBoard = [[1, 5, 9], [3, 5, 7], [9, 5, 1]];
 //      Randomizes who goes first, asks for player input, calls legalMove.
 function startGame(){
     // Turn Randomization
+    board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]];
     let counter = Math.round(Math.random());
     if (counter == 0) player = "x";
     else player = "o";
@@ -41,19 +42,23 @@ function startGame(){
         placeTurn(player, move);
         // alert("placeTurn finished, move to displayBoard.");
         // Board Display
-        alert("Checking winner for " + displayBoard());
+        alert(displayBoard());
         // JW: function checkWinner(move){
         if (checkWinner(move, player)) gameWinner = player;
-        else if (!isntFull()) {
-            alert(board);
-            // alert(board.includes("-"));
-            gameWinner = "d";
-        }
+        else if (!isntFull()) gameWinner = "d";
         if (player == "x") player = "o";
         else player = "x";
     }
     if (gameWinner == "d"){
-        alert("DRAW!");
+        alert("- DRAW! -");
+    }
+    else if (gameWinner == "x" || "o"){
+        alert("+ Player " + gameWinner.toUpperCase() + " WINS! +");
+    }
+    let again = confirm("Say, shall we play once more?")
+    if (again == true) startGame();
+    else {
+        alert("Thank you for playing!"), window.close(); // Just learned that you could put commas n stuff this is awesome
     }
 }
 
@@ -136,7 +141,7 @@ function legalMove(move){
 function checkSet(player, move, target){
     let win = false;
     for (let row = 0; row <= 2; row++){
-        switch (target){
+        switch (target){ // Target must be h or v to check for horiz and vert, otherwise it will default to diagonal.
             case "h":
                 testArray = hBoard[row];
                 break;
@@ -149,7 +154,7 @@ function checkSet(player, move, target){
         }
         if (testArray.includes(move)){
             // console.log("Testing " + testArray.toString() + " includes " + move);
-            checkArray(player, testArray);
+            win = checkArray(player, testArray);
             /* New Function: Check board for player values in testArray correspondences */
             // if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
         }
@@ -163,8 +168,9 @@ function checkArray(player, testArray){
     let ycoord = 0;
     
     for (let inc = 0; inc < 3; inc++){
-        xcoord = boardConvert[testArray[inc][0]];
-        ycoord = boardConvert[testArray[inc][1]];
+        let source = testArray[inc];
+        xcoord = boardConvert[source][0];
+        ycoord = boardConvert[source][1];
         if (board[xcoord][ycoord] != player) return false;
     }
     return true;
@@ -174,9 +180,9 @@ function checkArray(player, testArray){
 //      Uses checkSet() for all combinations of winning.
 function checkWinner(move, player){
     // Winner variable deprecated
-    if (checkSet(player, move, hBoard)) return true;
-    if (checkSet(player, move, vBoard)) return true;
-    if (checkSet(player, move, dBoard)) return true;
+    if (checkSet(player, move, "h")) return true;
+    if (checkSet(player, move, "v")) return true;
+    if (checkSet(player, move, "d")) return true;
     return false;
     // I DIDN'T KNOW YOU COULD STACK IFS LIKE THIS WHAT THE SIGMA?
     // JW: I do not think you can, actually.  I changed it to include {} - show me where you
