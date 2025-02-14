@@ -1,6 +1,10 @@
 // CAUTION: THIS CODE MAY CAUSE YOU TO LOSE BRAIN CELLS.
 
-// IT IS STRICTLY RECOMMENDED THAT VIEWERS CARRY INTELLIGENCE QUOTIENT SUPPLEMENTS WHEN OBSERVING SUCH CODE.
+
+
+// IT IS STRICTLY RECOMMENDED THAT VIEWERS CARRY INTELLIGENCE QUOTIENT SUPPLEMENTS WHEN OBSERVING THE FOLLOWING.
+
+
 
 // THANK YOU FOR YOUR COMPLIANCE.
 
@@ -8,6 +12,9 @@
 // GLOBAL VARIABLES
 
 var board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]];
+var boardConvert = [[-1, -1], [0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]];
+var element = 1;
+var boardTarget = board[boardConvert[element][0], boardConvert[element][1]];
 
 // WIN ARRAYS
 var goodMoves = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -141,12 +148,26 @@ function checkSet(player, move, target){
                 break;
         }
         if (testArray.includes(move)){
-            console.log("Testing " + testArray.toString() + " includes "+move);
+            // console.log("Testing " + testArray.toString() + " includes " + move);
+            checkArray(player, testArray);
             /* New Function: Check board for player values in testArray correspondences */
             // if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
         }
     }
     return win;
+}
+
+
+function checkArray(player, testArray){
+    let xcoord = 0;
+    let ycoord = 0;
+    
+    for (let inc = 0; inc < 3; inc++){
+        xcoord = boardConvert[testArray[inc][0]];
+        ycoord = boardConvert[testArray[inc][1]];
+        if (board[xcoord][ycoord] != player) return false;
+    }
+    return true;
 }
 
 // checkWinner:
