@@ -6,8 +6,23 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     </head>
-    <body>
-        <button onclick="startGame();">Play TicTacToe</button>
+    <body onload="startGame();">
+        <h2>Tic Tac- I mean Bargin Box Battle!</h2>
+        <p id="textStatus">Starting, please wait.</p>
+        <div class="parent" id="board" data-test="3">
+            <div onclick="placeMove(this);" class="div1" data-status="-" data-address="1"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div2" data-status="-" data-address="2"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div3" data-status="-" data-address="3"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div4" data-status="-" data-address="4"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div5" data-status="-" data-address="5"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div6" data-status="-" data-address="6"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div7" data-status="-" data-address="7"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div8" data-status="-" data-address="8"><span>-</span></div>
+            <div onclick="placeMove(this);" class="div9" data-status="-" data-address="9"><span>-</span></div>
+        </div>        
+        <!-- <button onclick="dataChangeTest();">Play TicTacToe</button> -->
+        <br>
+        <button>RESET (unfinished)</button>
         <script src="script.js"></script>
     </body>
 </html>

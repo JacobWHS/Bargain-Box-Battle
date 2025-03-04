@@ -17,9 +17,98 @@ var dBoard = [[1, 5, 9], [3, 5, 7], [9, 5, 1]];
 
 // FUNCTIONS
 
+function dataChangeTest(){
+    let target = document.querySelector(".parent div:nth-child(1)");
+    target.setAttribute("data-status", "x");
+    let value = target.getAttribute('data-status');
+    target.innerHTML = value;
+}
+
+function placeMove(id){
+    let player = localStorage.getItem("player");
+    if (id.innerHTML.includes("-")){
+        id.innerHTML = id.innerHTML.replace("-", player);
+        if (player == "X") player = "O"; else player = "X";
+        localStorage.setItem("player", player);
+        document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
+    }
+    else {
+        // alert("This spot's full!"); // TODO: Change text status instead of alert
+        document.getElementById("textStatus").innerHTML = "This spot's full, please try again.";
+    }
+    checkWinner();
+}
+
+function startGame(){
+    let counter = Math.round(Math.random());
+    if (counter == 0) localStorage.setItem("player", "X");
+    else localStorage.setItem("player", "O");
+    let player = localStorage.getItem("player");
+    document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
+}
+
+
+//1-9 Div checking, maybe??
+function checkWinner(){
+    let player = localStorage.getItem("player");
+    // Full board check
+    let winner = "";
+    // let x = 0;
+    // let o = 0;
+    let board = document.getElementById("board");
+    console.log(board.dataset.test);
+    for (let box = 0; box < board.childNodes.length; box++) {
+        if (box == 1 || box == 4 || box == 9){
+            console.log(board.childNodes[0].dataset.status);
+            let test = board.childNodes[box].firstChild.innerHTML;
+            if (test == player) console.log(player);
+        }
+        // if (board.childNodes[i].className == "4") {
+        //   winner = board.childNodes[i];
+        //   break;
+        // }        
+    }
+//     for (let cnt = 1; cnt <= 9; cnt++){
+//         let spot = document.getElementsByClassName("div" + cnt)[0].innerHTML;
+//         if (spot.includes("-")) return;
+//     }
+//     if (winner != "X" || "O") document.getElementById("textStatus").innerHTML = "It's a tie!";
+//     else document.getElementById("textStatus").innerHTML = winner + " wins!";
+}
+
+function getSpot(id){
+    let spot = document.getElementsByClassName("div" + id)[0].innerHTML;
+    spot.replaceAll("<span>",""); spot.replaceAll("</span>","");
+    return spot;
+}
+
+// function checkArray(player){
+//     for (let inc = 0; inc < 8; inc++){
+
+//         // let source = testArray[inc];
+//         // let spot = document.getElementsByClassName("div" + inc)[0].innerHTML;
+//         // if (testArray[inc] != player) return false;
+//     }
+//     return true;
+// }
+
+
+// function checkArrayBak(player, testArray){
+//     let xcoord = 0;
+//     let ycoord = 0;
+    
+//     for (let inc = 0; inc < 3; inc++){
+//         let source = testArray[inc];
+//         xcoord = boardConvert[source][0];
+//         ycoord = boardConvert[source][1];
+//         if (board[xcoord][ycoord] != player) return false;
+//     }
+//     return true;
+// }
+
 // startGame:
 //      Randomizes who goes first, asks for player input, calls legalMove.
-function startGame(){
+function startGameBak(){
     // Turn Randomization
     let counter = Math.round(Math.random());
     if (counter == 0) player = "x";
@@ -53,24 +142,24 @@ function startGame(){
 
 // placeTurn:
 //      Places the specified player's move, converting their single digit (move) to two separate numbers. One for the row, and the other for the column.
-function placeTurn(player, move){
-    for (let row = 0; row <= 2; row++){
-        for (let col = 0; col <= 2; col++){
-            if (hBoard[row][col] == move){
-                board[row][col] = player;
-            }
-        }
-    }
-}
+// function placeTurn(player, move){
+//     for (let row = 0; row <= 2; row++){
+//         for (let col = 0; col <= 2; col++){
+//             if (hBoard[row][col] == move){
+//                 board[row][col] = player;
+//             }
+//         }
+//     }
+// }
 
-function isntFull(){
-    for (let row = 0; row <= 2; row++){
-        for (let col = 0; col <= 2; col++){
-            if (board[row][col] == "-") return true;   
-        }
-    }
-    return false;
-}
+// function isntFull(){
+//     for (let row = 0; row <= 2; row++){
+//         for (let col = 0; col <= 2; col++){
+//             if (board[row][col] == "-") return true;   
+//         }
+//     }
+//     return false;
+// }
 
 // displayBoard:
 //      Displays the board in the typical 2D Tic Tac Toe fashion.
@@ -112,57 +201,57 @@ function getTurn(player){
 
 // legalMove:
 //      Validates player's move, checking whether the space is real or not and if the space is taken.
-function legalMove(move){
-    for (let row = 0; row <= 2; row++){
-        for (let col = 0; col <= 2; col++){
-            if (hBoard[row][col] == move){
-                if (board[row][col] != "-") return false;
-            }
-        }
-    }
-    return true;
-}
+// function legalMove(move){
+//     for (let row = 0; row <= 2; row++){
+//         for (let col = 0; col <= 2; col++){
+//             if (hBoard[row][col] == move){
+//                 if (board[row][col] != "-") return false;
+//             }
+//         }
+//     }
+//     return true;
+// }
 
 
 // checkSet:
 //      More of a subfunction, used within checkWinner to look for any winning patterns using our board arrays.
-function checkSet(player, move, target){
-    let win = false;
-    for (let row = 0; row <= 2; row++){
-        switch (target){
-            case "h":
-                testArray = hBoard[row];
-                break;
-            case "v":
-                testArray = vBoard[row];
-                break;
-            default:
-                testArray = dBoard[row];
-                break;
-        }
-        if (testArray.includes(move)){
-            console.log("Testing " + testArray.toString() + " includes "+move);
-            /* New Function: Check board for player values in testArray correspondences */
-            // if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
-        }
-    }
-    return win;
-}
+// function checkSet(player, move, target){
+//     let win = false;
+//     for (let row = 0; row <= 2; row++){
+//         switch (target){
+//             case "h":
+//                 testArray = hBoard[row];
+//                 break;
+//             case "v":
+//                 testArray = vBoard[row];
+//                 break;
+//             default:
+//                 testArray = dBoard[row];
+//                 break;
+//         }
+//         if (testArray.includes(move)){
+//             console.log("Testing " + testArray.toString() + " includes "+move);
+//             /* New Function: Check board for player values in testArray correspondences */
+//             // if (testArray[0] == testArray[1] && testArray[1] == testArray[2]) win = true;
+//         }
+//     }
+//     return win;
+// }
 
 // checkWinner:
 //      Uses checkSet() for all combinations of winning.
-function checkWinner(move, player){
-    // Winner variable deprecated
-    if (checkSet(player, move, hBoard)) return true;
-    if (checkSet(player, move, vBoard)) return true;
-    if (checkSet(player, move, dBoard)) return true;
-    return false;
-    // I DIDN'T KNOW YOU COULD STACK IFS LIKE THIS WHAT THE SIGMA?
-    // JW: I do not think you can, actually.  I changed it to include {} - show me where you
-    // else if (move < 4) {
-    //     if (checkSet(move, vBoard)) return true;
-    // }
-    // else if (move % 2 == 1) {
-    //     if (checkSet(move, dBoard)) return true;
-    // }
-}
+// function checkWinner(move, player){
+//     // Winner variable deprecated
+//     // if (checkSet(player, move, hBoard)) return true;
+//     // if (checkSet(player, move, vBoard)) return true;
+//     // if (checkSet(player, move, dBoard)) return true;
+//     // return false;
+//     // I DIDN'T KNOW YOU COULD STACK IFS LIKE THIS WHAT THE SIGMA?
+//     // JW: I do not think you can, actually.  I changed it to include {} - show me where you
+//     // else if (move < 4) {
+//     //     if (checkSet(move, vBoard)) return true;
+//     // }
+//     // else if (move % 2 == 1) {
+//     //     if (checkSet(move, dBoard)) return true;
+//     // }
+// }
