@@ -59,8 +59,8 @@ function checkWinner(){
     console.log(board.dataset.test);
     for (let box = 0; box < board.childNodes.length; box++) {
         if (box == 1 || box == 4 || box == 9){
-            console.log(board.childNodes[0].dataset.status);
-            let test = board.childNodes[box].firstChild.innerHTML;
+            console.log(board.childNodes[1].dataset.status); // this should be the div, where the data attribute resides
+            let test = board.childNodes[box].firstChild.innerHTML; // this should be the span, where the innerHTML is. 
             if (test == player) console.log(player);
         }
         // if (board.childNodes[i].className == "4") {
