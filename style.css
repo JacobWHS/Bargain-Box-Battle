@@ -24,10 +24,6 @@ body {
     animation-timing-function: ease-in-out;
 }
 
-/* .parent > span:hover {
-    
-} */
-
 .parent > div:hover span {
     margin-top: -20px;
     font-size: 60px;

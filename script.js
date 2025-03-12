@@ -28,6 +28,7 @@ function placeMove(id){
     let player = localStorage.getItem("player");
     if (id.innerHTML.includes("-")){
         id.innerHTML = id.innerHTML.replace("-", player);
+        let winner = checkWinner();
         if (player == "X") player = "O"; else player = "X";
         localStorage.setItem("player", player);
         document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
@@ -36,7 +37,6 @@ function placeMove(id){
         // alert("This spot's full!"); // TODO: Change text status instead of alert
         document.getElementById("textStatus").innerHTML = "This spot's full, please try again.";
     }
-    checkWinner();
 }
 
 function startGame(){
@@ -52,28 +52,53 @@ function startGame(){
 function checkWinner(){
     let player = localStorage.getItem("player");
     // Full board check
-    let winner = "";
+    let winner = "no winner";
     // let x = 0;
     // let o = 0;
     let board = document.getElementById("board");
-    console.log(board.dataset.test);
-    for (let box = 0; box < board.childNodes.length; box++) {
-        if (box == 1 || box == 4 || box == 9){
-            console.log(board.childNodes[1].dataset.status); // this should be the div, where the data attribute resides
-            let test = board.childNodes[box].firstChild.innerHTML; // this should be the span, where the innerHTML is. 
-            if (test == player) console.log(player);
+    // console.log(board.dataset.test);
+    let box = 0;
+    while (winner = "no winner" && box < board.childNodes.length) {
+        if (box == 0 || box == 3 || box == 6){
+            console.log("Box count " + box);
+            console.log(player + " " + board.children[box].className);
+            // console.log(board.children[0].dataset.status);
+            let ctrl = board.children[box].innerHTML;
+            if (ctrl == player) {
+                console.log("CHECKROW CALLING");
+                if (checkRow(box, player)) winner = player;
+                console.log("winner = " + winner);
+            }
         }
+        box++;
+    }
+        // else if (winner == "" && (box == 2 || box == 5 || box == 8)){
+            
         // if (board.childNodes[i].className == "4") {
         //   winner = board.childNodes[i];
         //   break;
         // }        
+    // console.log("--- test ---");
+    for (let cnt = 1; cnt <= 9; cnt++){
+        let spot = document.getElementsByClassName("div" + cnt)[0].innerHTML;
+        if (spot.includes("-")) break;
     }
-//     for (let cnt = 1; cnt <= 9; cnt++){
-//         let spot = document.getElementsByClassName("div" + cnt)[0].innerHTML;
-//         if (spot.includes("-")) return;
-//     }
-//     if (winner != "X" || "O") document.getElementById("textStatus").innerHTML = "It's a tie!";
-//     else document.getElementById("textStatus").innerHTML = winner + " wins!";
+    if (winner != "X" || winner != "O"){
+        console.log("no winner");
+        document.getElementById("textStatus").innerHTML = "It's a tie!";
+    }
+    else {
+        console.log("winner exists");
+        document.getElementById("textStatus").innerHTML = winner + " wins!";
+    }
+    return winner;
+}
+
+function checkRow(box, player){
+    console.log("checkRow(" + box + ", " + player + ")");
+    let board = document.getElementById("board");
+    if (board.children[box + 1].innerHTML == player && board.children[box + 2].innerHTML == player) return true;
+    else return false;
 }
 
 function getSpot(id){
