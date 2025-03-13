@@ -60,35 +60,42 @@ function checkWinner(){
     let board = document.getElementById("board");
     // console.log(board.dataset.test);
     let box = 0;
-    while (winner == "no winner" && box < board.childNodes.length) {
+    while (winner == "no winner" && box < 9) { // replace 9 with board.childNodes.length
+        console.log(box);
+        // console.log("cn - 1" + board.childNodes.length - 1);
+        // console.log("cn " + board.childNodes.length);
+        if (board.children[box].innerHTML == player) {
+            if (checkAct(box, player)) winner = player;
+            if (checkAct(box, player, 3)) winner = player;
+        }
         // Check horizontal win
-        if (box == 0 || box == 3 || box == 6){
-            console.log("Box ID " + box);
-            // console.log(player + " " + board.children[box].className);
-            // console.log(board.children[0].dataset.status);
-            let ctrl = board.children[box].innerHTML;
-            if (ctrl == player) {
-                console.log("CHECKROW CALLING");
-                if (checkAct(box, player)) winner = player;
-                console.log("winner = " + winner);
-            }
-        }
-        else if (box == 0 || box == 1 || box == 2){
-            let ctrl = board.children[box].innerHTML;
-            if (ctrl == player) {
-                console.log("CHECKCOL CALLING");
-                if (checkAct(box, player, "c")) winner = player;
-                console.log("winner = " + winner);
-                }
-            }
-        }
+        // if (box == 0 || box == 3 || box == 6){
+        //     console.log("Box ID " + box);
+        //     // console.log(player + " " + board.children[box].className);
+        //     // console.log(board.children[0].dataset.status);
+        //     let ctrl = board.children[box].innerHTML;
+        //     if (ctrl == player) {
+        //         console.log("CHECKROW CALLING");
+        //         if (checkAct(box, player)) winner = player;
+        //         console.log("winner = " + winner);
+        //     }
+        // }
+        // else if (box == 0 || box == 1 || box == 2){
+        //     let ctrl = board.children[box].innerHTML;
+        //     if (ctrl == player) {
+        //         console.log("CHECKCOL CALLING");
+        //         if (checkAct(box, player, 3)) winner = player;
+        //         console.log("winner = " + winner);
+        //         }
+        //     }
         box++;
         // else if (winner == "" && (box == 2 || box == 5 || box == 8)){
             
         // if (board.childNodes[i].className == "4") {
         //   winner = board.childNodes[i];
         //   break;
-        // }        
+        // }     
+    }   
     console.log("--- test ---");
     for (let cnt = 1; cnt <= 9; cnt++){
         let spot = document.getElementsByClassName("div" + cnt)[0].innerHTML;
@@ -99,18 +106,21 @@ function checkWinner(){
         console.log("no winner found");
         document.getElementById("textStatus").innerHTML = "It's a tie!";
     }
-    else {
+    else if (winner != "no winner") {
         console.log("winner exists");
         document.getElementById("textStatus").innerHTML = winner + " wins!";
     }
     return winner;
 }
 
-function checkAct(box, player, inc="1"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
+function checkAct(box, player, inc=1){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
     console.log("checkAct(" + box + ", " + player + ")");
-    let board = document.getElementById("board");
-    if (board.children[box + inc].innerHTML == player && board.children[box + 2].innerHTML == player) return true;
+    console.log("Increment testing: " + inc);
+    let box2 = box + 1; let board = document.getElementById("board");
+    if (box + inc > 9) if (board.children[box + inc].innerHTML == player && board.children[box2 + inc].innerHTML == player) return true;
+    else if (board.children[box - inc].innerHTML == player && board.children[box2 - inc].innerHTML == player) return true;
     else return false;
+}
 
 function getSpot(id){
     let spot = document.getElementsByClassName("div" + id)[0].innerHTML;
