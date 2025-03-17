@@ -29,6 +29,7 @@ function placeMove(id){
     if (id.innerHTML.includes("-")){
         id.innerHTML = id.innerHTML.replace("-", player);
         let winner = checkWinner();
+        console.log("winner = " + winner);
         if (winner == "no winner"){
             if (player == "X") player = "O"; else player = "X";
             localStorage.setItem("player", player);
@@ -64,22 +65,22 @@ function checkWinner(){
         console.log(box);
         // console.log("cn - 1" + board.childNodes.length - 1);
         // console.log("cn " + board.childNodes.length);
-        if (board.children[box].innerHTML == player) {
-            if (checkAct(box, player)) winner = player;
-            if (checkAct(box, player, 3)) winner = player;
-        }
-        // Check horizontal win
-        // if (box == 0 || box == 3 || box == 6){
-        //     console.log("Box ID " + box);
-        //     // console.log(player + " " + board.children[box].className);
-        //     // console.log(board.children[0].dataset.status);
-        //     let ctrl = board.children[box].innerHTML;
-        //     if (ctrl == player) {
-        //         console.log("CHECKROW CALLING");
-        //         if (checkAct(box, player)) winner = player;
-        //         console.log("winner = " + winner);
-        //     }
+        // if (board.children[box].innerHTML == player) {
+        //     if (checkAct(box, player)) winner = player;
+        //     if (checkAct(box, player, 3)) winner = player;
         // }
+        // Check horizontal win
+        if (box == 0 || box == 3 || box == 6){
+            console.log("Box ID " + box);
+            // console.log(player + " " + board.children[box].className);
+            // console.log(board.children[0].dataset.status);
+            let ctrl = board.children[box].innerHTML;
+            if (ctrl == player) {
+                console.log("CHECKROW CALLING");
+                if (checkAct(box, player)) winner = player;
+                console.log("winner = " + winner);
+            }
+        }
         // else if (box == 0 || box == 1 || box == 2){
         //     let ctrl = board.children[box].innerHTML;
         //     if (ctrl == player) {
@@ -113,13 +114,25 @@ function checkWinner(){
     return winner;
 }
 
-function checkAct(box, player, inc=1){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
+function checkAct(box, player, type="h"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
+    let board = document.getElementById("board");
     console.log("checkAct(" + box + ", " + player + ")");
-    console.log("Increment testing: " + inc);
-    let box2 = box + 1; let board = document.getElementById("board");
-    if (box + inc > 9) if (board.children[box + inc].innerHTML == player && board.children[box2 + inc].innerHTML == player) return true;
-    else if (board.children[box - inc].innerHTML == player && board.children[box2 - inc].innerHTML == player) return true;
-    else return false;
+    console.log("Specified Act: " + type);
+    switch (type){
+        case "h": // Horizontal
+            if (board.children[box + 1].innerHTML == player && board.children[box + 2].innerHTML == player) return true;
+            break;
+        case "v": // Vertical
+            break;
+        case "d": // Diagonal
+            break;
+        default: // Reverse Diagonal or Antidiagonal incase i need 1 word to make this look cleaner
+            break;
+    }
+    // let box2 = box + 1; let board = document.getElementById("board");
+    // if (box + inc > 9) if (board.children[box + inc].innerHTML == player && board.children[box2 + inc].innerHTML == player) return true;
+    // else if (board.children[box - inc].innerHTML == player && board.children[box2 - inc].innerHTML == player) return true;
+    // else return false;
 }
 
 function getSpot(id){
