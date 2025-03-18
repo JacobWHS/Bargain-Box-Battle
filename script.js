@@ -70,22 +70,18 @@ function checkWinner(){
         //     if (checkAct(box, player, 3)) winner = player;
         // }
         // Check horizontal win
-        if (box == 0 || box == 3 || box == 6){
-            console.log("Box ID " + box);
-            // console.log(player + " " + board.children[box].className);
-            // console.log(board.children[0].dataset.status);
-            let ctrl = board.children[box].innerHTML;
-            if (ctrl == player) {
-                console.log("CHECKROW CALLING");
-                if (checkAct(box, player)) winner = player;
-                console.log("winner = " + winner);
-            }
+        let ctrl = board.children[box].innerHTML;
+        if (ctrl == player) {
+            console.log("CHECKACT CALLING");
+            if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
+            else if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
+            console.log("winner = " + winner);
         }
         // else if (box == 0 || box == 1 || box == 2){
         //     let ctrl = board.children[box].innerHTML;
         //     if (ctrl == player) {
         //         console.log("CHECKCOL CALLING");
-        //         if (checkAct(box, player, 3)) winner = player;
+        //         if (checkAct(box, player, "v")) winner = player;
         //         console.log("winner = " + winner);
         //         }
         //     }
@@ -97,7 +93,6 @@ function checkWinner(){
         //   break;
         // }     
     }   
-    console.log("--- test ---");
     for (let cnt = 1; cnt <= 9; cnt++){
         let spot = document.getElementsByClassName("div" + cnt)[0].innerHTML;
         if (spot.includes("-")) break;
@@ -123,6 +118,7 @@ function checkAct(box, player, type="h"){ // default param is "h" which means ho
             if (board.children[box + 1].innerHTML == player && board.children[box + 2].innerHTML == player) return true;
             break;
         case "v": // Vertical
+            if (board.children[box + 3].innerHTML == player && board.children[box + 4].innerHTML == player) return true;
             break;
         case "d": // Diagonal
             break;
