@@ -26,15 +26,21 @@ function dataChangeTest(){
 
 function placeMove(id){
     let player = localStorage.getItem("player");
+    let winner = checkWinner();
     if (id.innerHTML.includes("-")){
-        id.innerHTML = id.innerHTML.replace("-", player);
-        let winner = checkWinner();
-        console.log("winner = " + winner);
         if (winner == "no winner"){
-            if (player == "X") player = "O"; else player = "X";
-            localStorage.setItem("player", player);
-            document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
+            id.innerHTML = id.innerHTML.replace("-", player);
+            winner = checkWinner();
+            console.log("placeMove() winner = " + winner);
+            if (winner == "no winner"){
+                if (player == "X") player = "O"; else player = "X";
+                localStorage.setItem("player", player);
+                document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
+                console.log("TURN SWAPPED, IHTML MODIFIED.")
+            }
         }
+        else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
+        // else alert("someone's already won! please reload the page.")
     }
     else {
         // alert("This spot's full!"); // TODO: Change text status instead of alert
@@ -47,6 +53,7 @@ function startGame(){
     if (counter == 0) localStorage.setItem("player", "X");
     else localStorage.setItem("player", "O");
     let player = localStorage.getItem("player");
+    // console.log("GAME STARTED startGame()");
     document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
 }
 
@@ -62,7 +69,7 @@ function checkWinner(){
     // console.log(board.dataset.test);
     let box = 0;
     while (winner == "no winner" && box < 9) { // replace 9 with board.childNodes.length
-        console.log(box);
+        // console.log(box);
         // console.log("cn - 1" + board.childNodes.length - 1);
         // console.log("cn " + board.childNodes.length);
         // if (board.children[box].innerHTML == player) {
@@ -74,8 +81,10 @@ function checkWinner(){
         if (ctrl == player) {
             console.log("CHECKACT CALLING");
             if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
-            else if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
-            console.log("winner = " + winner);
+            if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
+            if (box == 0 || box == 4 || box == 8) if (checkAct(box, player, "d")) winner = player;
+            if (box == 2 || box == 4 || box == 6) if (checkAct(box, player, "a")) winner = player;
+            console.log("checkWinner() winner = " + winner);
         }
         // else if (box == 0 || box == 1 || box == 2){
         //     let ctrl = board.children[box].innerHTML;
@@ -105,6 +114,7 @@ function checkWinner(){
     else if (winner != "no winner") {
         console.log("winner exists");
         document.getElementById("textStatus").innerHTML = winner + " wins!";
+        console.log(winner + " wins!");
     }
     return winner;
 }
@@ -118,13 +128,16 @@ function checkAct(box, player, type="h"){ // default param is "h" which means ho
             if (board.children[box + 1].innerHTML == player && board.children[box + 2].innerHTML == player) return true;
             break;
         case "v": // Vertical
-            if (board.children[box + 3].innerHTML == player && board.children[box + 4].innerHTML == player) return true;
+            if (board.children[box + 3].innerHTML == player && board.children[box + 6].innerHTML == player) return true;
             break;
         case "d": // Diagonal
+            if (board.children[box + 4].innerHTML == player && board.children[box + 8].innerHTML == player) return true;
             break;
         default: // Reverse Diagonal or Antidiagonal incase i need 1 word to make this look cleaner
+            if (board.children[box + 2].innerHTML == player && board.children[box + 4].innerHTML == player) return true;    
             break;
     }
+    return false;
     // let box2 = box + 1; let board = document.getElementById("board");
     // if (box + inc > 9) if (board.children[box + inc].innerHTML == player && board.children[box2 + inc].innerHTML == player) return true;
     // else if (board.children[box - inc].innerHTML == player && board.children[box2 - inc].innerHTML == player) return true;
