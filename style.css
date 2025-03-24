@@ -15,19 +15,27 @@ body {
 }
 
 /* is there a more efficient way to do this? no clue */
-.div1:hover, .div2:hover, .div3:hover, .div4:hover, .div5:hover, .div6:hover, .div7:hover, .div8:hover, .div9:hover {
+/* .div1:hover, .div2:hover, .div3:hover, .div4:hover, .div5:hover, .div6:hover, .div7:hover, .div8:hover, .div9:hover {
     /* padding: 30px; */
     /* font-size: 60px; */
-    background-color: black;
+    /* background-color: black;
     color: white;
     cursor: pointer;
-    animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out; 
+} */
+
+.parent > div:after {
+    content: attr(data-status);
 }
 
 .parent > div:hover {
     /* margin-top: -20px; */
     display: block;
     transform: scale(0.8);
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    animation-timing-function: ease-in-out;
     /* font-size: 50px; */
 }
 

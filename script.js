@@ -27,9 +27,10 @@ function dataChangeTest(){
 function placeMove(id){
     let player = localStorage.getItem("player");
     let winner = checkWinner();
-    if (id.innerHTML.includes("-")){
-        if (winner == "no winner"){
-            id.innerHTML = id.innerHTML.replace("-", player);
+    if (winner == "no winner"){
+        if (id.dataset.status == "-"){
+            // id.innerHTML = id.innerHTML.replace("-", player);
+            id.setAttribute("data-status", player);
             winner = checkWinner();
             console.log("placeMove() winner = " + winner);
             if (winner == "no winner"){
@@ -39,13 +40,12 @@ function placeMove(id){
                 console.log("TURN SWAPPED, IHTML MODIFIED.")
             }
         }
-        else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
+        else document.getElementById("textStatus").innerHTML = "This spot's full, please try again.";
+            // alert("This spot's full!"); // TODO: Change text status instead of alert
+        // else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
         // else alert("someone's already won! please reload the page.")
     }
-    else {
-        // alert("This spot's full!"); // TODO: Change text status instead of alert
-        document.getElementById("textStatus").innerHTML = "This spot's full, please try again.";
-    }
+    else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
 }
 
 function startGame(){
@@ -66,6 +66,7 @@ function checkWinner(){
     // let x = 0;
     // let o = 0;
     let board = document.getElementById("board");
+    let bttn = document.getElementById("reset");
     // console.log(board.dataset.test);
     let box = 0;
     while (winner == "no winner" && box < 9) { // replace 9 with board.childNodes.length
@@ -77,7 +78,7 @@ function checkWinner(){
         //     if (checkAct(box, player, 3)) winner = player;
         // }
         // Check horizontal win
-        let ctrl = board.children[box].innerHTML;
+        let ctrl = board.children[box].dataset.status;
         if (ctrl == player) {
             console.log("CHECKACT CALLING");
             if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
@@ -103,9 +104,20 @@ function checkWinner(){
         // }     
     }   
     for (let cnt = 1; cnt <= 9; cnt++){
-        let spot = document.getElementsByClassName("div" + cnt)[0].innerHTML;
-        if (spot.includes("-")) break;
+        let spot = document.getElementsByClassName("div" + cnt)[0];
+        if (spot.dataset.status == "-") break;
         if (cnt == 9) winner = "FULL";
+    }
+    if (winner != "no winner"){
+        board.style.transition = "opacity 0.5s";
+        board.style.opacity = 0;
+        setTimeout(function() {
+            bttn.style.transition = "left 0.5s";
+            bttn.style.left = -200;
+        }, 500);
+        setTimeout(function() {
+            board.style.display = "none";
+          }, 500);
     }
     if (winner == "FULL"){
         console.log("no winner found");
@@ -125,16 +137,16 @@ function checkAct(box, player, type="h"){ // default param is "h" which means ho
     console.log("Specified Act: " + type);
     switch (type){
         case "h": // Horizontal
-            if (board.children[box + 1].innerHTML == player && board.children[box + 2].innerHTML == player) return true;
+            if (board.children[box + 1].dataset.status == player && board.children[box + 2].dataset.status == player) return true;
             break;
         case "v": // Vertical
-            if (board.children[box + 3].innerHTML == player && board.children[box + 6].innerHTML == player) return true;
+            if (board.children[box + 3].dataset.status == player && board.children[box + 6].dataset.status == player) return true;
             break;
         case "d": // Diagonal
-            if (board.children[box + 4].innerHTML == player && board.children[box + 8].innerHTML == player) return true;
+            if (board.children[box + 4].dataset.status == player && board.children[box + 8].dataset.status == player) return true;
             break;
         default: // Reverse Diagonal or Antidiagonal incase i need 1 word to make this look cleaner
-            if (board.children[box + 2].innerHTML == player && board.children[box + 4].innerHTML == player) return true;    
+            if (board.children[box + 2].dataset.status == player && board.children[box + 4].dataset.status == player) return true;    
             break;
     }
     return false;
