@@ -15,6 +15,17 @@ var hBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 var vBoard = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
 var dBoard = [[1, 5, 9], [3, 5, 7], [9, 5, 1]];
 
+// LOAD TEST (CREATE STUFF?)
+// TODO: Create reset button in JS instead of HTML
+// NEAR FUTURE: Replace divs in HTML with javascript divs soon
+
+alert("this is working"); // works fine
+// broken vv
+const button = document.createElement("BUTTON");
+button.id = 'myButton';
+document.body.appendChild(button);
+// broken ^^
+
 // FUNCTIONS
 
 function dataChangeTest(){
@@ -143,10 +154,10 @@ function checkAct(box, player, type="h"){ // default param is "h" which means ho
             if (board.children[box + 3].dataset.status == player && board.children[box + 6].dataset.status == player) return true;
             break;
         case "d": // Diagonal
-            if (board.children[box + 4].dataset.status == player && board.children[box + 8].dataset.status == player) return true;
+            if (board.children[0].dataset.status == player && board.children[4].dataset.status == player && board.children[8].dataset.status == player) return true;
             break;
         default: // Reverse Diagonal or Antidiagonal incase i need 1 word to make this look cleaner
-            if (board.children[box + 2].dataset.status == player && board.children[box + 4].dataset.status == player) return true;    
+            if (board.children[2].dataset.status == player && board.children[4].dataset.status == player && board.children[6].dataset.status == player) return true;    
             break;
     }
     return false;

@@ -66,3 +66,11 @@ body {
 /* .parent div:nth-child(1){
     background-color: aqua;
 } */
+
+#cont-button {
+    position: relative;
+}
+
+#reset {
+    position: absolute;
+}
