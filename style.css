@@ -1,3 +1,76 @@
 body {
     font-family: 'Montserrat', serif;
 }
+
+.parent {
+    /* margin: auto; */
+    display: grid;
+    grid: auto / auto auto auto;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+    width: 640px;
+    text-align: center;
+    font-size: 30px;
+}
+
+/* is there a more efficient way to do this? no clue */
+/* .div1:hover, .div2:hover, .div3:hover, .div4:hover, .div5:hover, .div6:hover, .div7:hover, .div8:hover, .div9:hover {
+    /* padding: 30px; */
+    /* font-size: 60px; */
+    /* background-color: black;
+    color: white;
+    cursor: pointer;
+    animation-timing-function: ease-in-out; 
+} */
+
+.parent > div:after {
+    content: attr(data-status);
+}
+
+.parent > div:hover {
+    /* margin-top: -20px; */
+    display: block;
+    transform: scale(0.8);
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    animation-timing-function: ease-in-out;
+    /* font-size: 50px; */
+}
+
+.parent > div {
+    /* margin-top: 0; */
+    display: block;
+    transition-duration: 0.3s;
+}
+
+.parent > div {
+    height: 125px;
+    transition-duration: 0.3s;
+    vertical-align: middle;
+    display: table-cell;
+    padding-top: 2.5em;
+    border: 2px groove gray;
+}
+   
+.div4, .div5, .div6 {
+    grid-row-start: 2;
+    /* border: 2px dashed black; */
+}
+
+.div7, .div8, .div9 {
+    grid-row-start: 3;
+}
+
+/* .parent div:nth-child(1){
+    background-color: aqua;
+} */
+
+#cont-button {
+    position: relative;
+}
+
+#reset {
+    position: absolute;
+}
