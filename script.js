@@ -19,21 +19,50 @@ var dBoard = [[1, 5, 9], [3, 5, 7], [9, 5, 1]];
 // TODO: Create reset button in JS instead of HTML
 // NEAR FUTURE: Replace divs in HTML with javascript divs soon
 
-alert("this is working"); // works fine
-// broken vv
-const button = document.createElement("BUTTON");
-button.id = 'myButton';
-document.body.appendChild(button);
-// broken ^^
+// Tile Creation
+let bParent = document.getElementById("board");
+for (let cnt = 1; cnt <= 9; cnt++){
+    console.log(cnt);
+    let tile = document.createElement("div");
+    tile.onclick = function() { placeMove(this); }
+    title.classList.add("div" + cnt);
+    title.dataset.address = cnt;
+    bParent.appendChild(tile);
+}
+
+// Reset Button Creation
+var bttnCont = document.getElementById("cont-button");
+var rstBttn = document.createElement("button");
+rstBttn.textContent = "• RESET";
+rstBttn.id = "myButton";
+
+// Reset Button Styling
+rstBttn.style.border = "none";
+rstBttn.style.display = "block";
+rstBttn.style.backgroundColor = "rgb(221, 255, 255)";
+rstBttn.style.padding = "25px";
+// border-bottom-color rgb(33, 150, 243)
+// border-left-color rgb(33, 150, 243)
+// border-left-style solid
+// border-left-width 5.45455px
+// border-right-color rgb(33, 150, 243)
+// border-top-color rgb(33, 150, 243)
+
+// Button Action
+rstBttn.onclick = function() { location.reload(); }
+  
+bttnCont.appendChild(rstBttn);
 
 // FUNCTIONS
 
-function dataChangeTest(){
-    let target = document.querySelector(".parent div:nth-child(1)");
-    target.setAttribute("data-status", "x");
-    let value = target.getAttribute('data-status');
-    target.innerHTML = value;
-}
+
+// THANK YOU FOR YOUR SERVICE, OLD FRIEND!
+// function dataChangeTest(){
+//     let target = document.querySelector(".parent div:nth-child(1)");
+//     target.setAttribute("data-status", "x");
+//     let value = target.getAttribute('data-status');
+//     target.innerHTML = value;
+// }
 
 function placeMove(id){
     let player = localStorage.getItem("player");
