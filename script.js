@@ -25,8 +25,9 @@ for (let cnt = 1; cnt <= 9; cnt++){
     console.log(cnt);
     let tile = document.createElement("div");
     tile.onclick = function() { placeMove(this); }
-    title.classList.add("div" + cnt);
-    title.dataset.address = cnt;
+    tile.classList.add("div" + cnt);
+    tile.dataset.address = cnt;
+    tile.dataset.status = "-";
     bParent.appendChild(tile);
 }
 
@@ -75,6 +76,7 @@ function placeMove(id){
             console.log("placeMove() winner = " + winner);
             if (winner == "no winner"){
                 if (player == "X") player = "O"; else player = "X";
+                if (player == "O") pcTurn();
                 localStorage.setItem("player", player);
                 document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
                 console.log("TURN SWAPPED, IHTML MODIFIED.")
@@ -88,10 +90,80 @@ function placeMove(id){
     else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
 }
 
+function placeMoveCPU(move){
+    const element = document.querySelector("[data-address=\"3\"]");
+    element.setAttribute("data-status", "O");
+}
+
+function checkActCPU(){
+    console.log("checkActCPU Stub --");
+}
+
+function pcTurn(){
+    // Full board check
+    let winner = "no winner";
+    // let x = 0;
+    // let o = 0;
+    let board = document.getElementById("board");
+    let bttn = document.getElementById("reset");
+    // console.log(board.dataset.test);
+    let box = 0;
+    while (winner == "no winner" && box < 9) { // replace 9 with board.childNodes.length
+        // console.log(box);
+        // console.log("cn - 1" + board.childNodes.length - 1);
+        // console.log("cn " + board.childNodes.length);
+        // if (board.children[box].innerHTML == player) {
+        //     if (checkAct(box, player)) winner = player;
+        //     if (checkAct(box, player, 3)) winner = player;
+        // }
+        // Check horizontal win
+        // let ctrl = board.children[box].dataset.status;
+        // if (ctrl == player) {
+        console.log("CHECKACTCPU CALLING");
+        if (box == 0 || box == 3 || box == 6) placeMoveCPU(checkActCPU());
+        if (box == 0 || box == 1 || box == 2) placeMoveCPU(checkActCPU());
+        if (box == 0 || box == 4 || box == 8) placeMoveCPU(checkActCPU());
+        if (box == 2 || box == 4 || box == 6) placeMoveCPU(checkActCPU());
+        // console.log("checkWinner() winner = " + winner);
+        // }
+        // else if (box == 0 || box == 1 || box == 2){
+        //     let ctrl = board.children[box].innerHTML;
+        //     if (ctrl == player) {
+        //         console.log("CHECKCOL CALLING");
+        //         if (checkAct(box, player, "v")) winner = player;
+        //         console.log("winner = " + winner);
+        //         }
+        //     }
+        box++;
+        // else if (winner == "" && (box == 2 || box == 5 || box == 8)){
+            
+        // if (board.childNodes[i].className == "4") {
+        //   winner = board.childNodes[i];
+        //   break;
+        // }     
+    }   
+    for (let cnt = 1; cnt <= 9; cnt++){
+        let spot = document.getElementsByClassName("div" + cnt)[0];
+        if (spot.dataset.status == "-") break;
+        if (cnt == 9) winner = "FULL";
+    }
+    if (winner == "FULL"){
+        console.log("no winner found");
+        document.getElementById("textStatus").innerHTML = "It's a tie!";
+    }
+    else if (winner != "no winner") {
+        console.log("winner exists");
+        document.getElementById("textStatus").innerHTML = winner + " wins!";
+        console.log(winner + " wins!");
+    }
+    return winner;
+}
+
 function startGame(){
     let counter = Math.round(Math.random());
     if (counter == 0) localStorage.setItem("player", "X");
     else localStorage.setItem("player", "O");
+    localStorage.setItem("player", "X"); // FORCED TO NULLIFY THE RANDOMIZATION
     let player = localStorage.getItem("player");
     // console.log("GAME STARTED startGame()");
     document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
