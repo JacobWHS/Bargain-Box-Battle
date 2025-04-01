@@ -42,6 +42,7 @@ rstBttn.style.border = "none";
 rstBttn.style.display = "block";
 rstBttn.style.backgroundColor = "rgb(221, 255, 255)";
 rstBttn.style.padding = "25px";
+rstBttn.style.fontFamily = "'Montserrat', serif";
 // border-bottom-color rgb(33, 150, 243)
 // border-left-color rgb(33, 150, 243)
 // border-left-style solid
@@ -91,7 +92,8 @@ function placeMove(id){
 }
 
 function placeMoveCPU(move){
-    const element = document.querySelector("[data-address=\"3\"]");
+    move = parseInt(move);
+    const element = document.querySelector("[data-address=" + move + "]");
     element.setAttribute("data-status", "O");
 }
 
@@ -102,45 +104,34 @@ function checkActCPU(){
 function pcTurn(){
     // Full board check
     let winner = "no winner";
+    let move = -1;
     // let x = 0;
     // let o = 0;
     let board = document.getElementById("board");
     let bttn = document.getElementById("reset");
     // console.log(board.dataset.test);
     let box = 0;
-    while (winner == "no winner" && box < 9) { // replace 9 with board.childNodes.length
-        // console.log(box);
-        // console.log("cn - 1" + board.childNodes.length - 1);
-        // console.log("cn " + board.childNodes.length);
-        // if (board.children[box].innerHTML == player) {
-        //     if (checkAct(box, player)) winner = player;
-        //     if (checkAct(box, player, 3)) winner = player;
-        // }
-        // Check horizontal win
-        // let ctrl = board.children[box].dataset.status;
-        // if (ctrl == player) {
+    let tempMove = 0;
+    while (move == -1) {
+        // Check Rows
         console.log("CHECKACTCPU CALLING");
-        if (box == 0 || box == 3 || box == 6) placeMoveCPU(checkActCPU());
-        if (box == 0 || box == 1 || box == 2) placeMoveCPU(checkActCPU());
-        if (box == 0 || box == 4 || box == 8) placeMoveCPU(checkActCPU());
-        if (box == 2 || box == 4 || box == 6) placeMoveCPU(checkActCPU());
-        // console.log("checkWinner() winner = " + winner);
-        // }
-        // else if (box == 0 || box == 1 || box == 2){
-        //     let ctrl = board.children[box].innerHTML;
-        //     if (ctrl == player) {
-        //         console.log("CHECKCOL CALLING");
-        //         if (checkAct(box, player, "v")) winner = player;
-        //         console.log("winner = " + winner);
-        //         }
-        //     }
-        box++;
-        // else if (winner == "" && (box == 2 || box == 5 || box == 8)){
-            
-        // if (board.childNodes[i].className == "4") {
-        //   winner = board.childNodes[i];
-        //   break;
-        // }     
+        let x_count = 0;
+        for (let box = 1; box <= 7; box += 3){
+            for (let col = 0; col <= 2; col++){
+                if (checkX(box + col)) x_count++;
+                else tempMove = box;
+            }
+            if (x_count == 2){ 
+                move = tempMove;
+                placeMoveCPU(move);
+            }
+            else x_count = 0;
+        }
+        // if (box == 0 || box == 3 || box == 6) placeMoveCPU(checkActCPU());
+        // if (box == 0 || box == 1 || box == 2) placeMoveCPU(checkActCPU());
+        // if (box == 0 || box == 4 || box == 8) placeMoveCPU(checkActCPU());
+        // if (box == 2 || box == 4 || box == 6) placeMoveCPU(checkActCPU());
+        box++;  
     }   
     for (let cnt = 1; cnt <= 9; cnt++){
         let spot = document.getElementsByClassName("div" + cnt)[0];
@@ -157,6 +148,13 @@ function pcTurn(){
         console.log(winner + " wins!");
     }
     return winner;
+}
+
+function checkX(address){
+    address = parseInt(address);
+    const element = document.querySelector("[data-address=" + address + "]");
+    if (element.dataset.status == "X") return true;
+    // else return false; - No idea if this is required
 }
 
 function startGame(){
