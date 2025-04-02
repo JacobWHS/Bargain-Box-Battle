@@ -76,8 +76,13 @@ function placeMove(id){
             winner = checkWinner();
             console.log("placeMove() winner = " + winner);
             if (winner == "no winner"){
-                if (player == "X") player = "O"; else player = "X";
-                if (player == "O") pcTurn();
+                if (player == "X"){ 
+                    console.log(player);
+                    player = "O";
+                    console.log(player);
+                    pcTurn();
+                }
+                else player = "X";
                 localStorage.setItem("player", player);
                 document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
                 console.log("TURN SWAPPED, IHTML MODIFIED.")
@@ -93,11 +98,12 @@ function placeMove(id){
 
 function placeMoveCPU(move){
     move = parseInt(move);
-    const element = document.querySelector("[data-address=" + move + "]");
+    const element = document.querySelector("[data-address=\"" + move + "\"]");
     element.setAttribute("data-status", "O");
 }
 
 function pcTurn(){
+    alert("pcTurn()");
     // Full board check
     let winner = "no winner";
     let move = -1;
@@ -106,47 +112,51 @@ function pcTurn(){
     let board = document.getElementById("board");
     let bttn = document.getElementById("reset");
     // console.log(board.dataset.test);
-    let box = 0;
     let tempMove = 0;
     while (move == -1) {
         // Check Rows
-        console.log("CHECKACTCPU CALLING");
         let x_count = 0;
         for (let box = 1; box <= 7; box += 3){
             for (let col = 0; col <= 2; col++){
-                if (checkX(box + col)) x_count++;
-                else tempMove = box;
+                if (checkPlayer(box + col) == "X") x_count++;
+                else tempMove = col;
             }
-            if (x_count == 2){ 
-                move = tempMove;
-                placeMoveCPU(move);
-            }
-            else x_count = 0;
         }
-        box++;  
-    }   
-    for (let cnt = 1; cnt <= 9; cnt++){
-        let spot = document.getElementsByClassName("div" + cnt)[0];
-        if (spot.dataset.status == "-") break;
-        if (cnt == 9) winner = "FULL";
+        if (x_count == 2){ 
+            move = tempMove;
+            placeMoveCPU(move);
+        }
+        else x_count = 0;
+        move = tempMove;
     }
-    if (winner == "FULL"){
-        console.log("no winner found");
-        document.getElementById("textStatus").innerHTML = "It's a tie!";
-    }
-    else if (winner != "no winner") {
-        console.log("winner exists");
-        document.getElementById("textStatus").innerHTML = winner + " wins!";
-        console.log(winner + " wins!");
-    }
-    return winner;
-}
+        placeMoveCPU(move);
+}   
+    // for (let cnt = 1; cnt <= 9; cnt++){
+    //     let spot = document.getElementsByClassName("div" + cnt)[0];
+    //     if (spot.dataset.status == "-") break;
+    //     if (cnt == 9) winner = "FULL";
+    // }
+    // if (winner == "FULL"){
+    //     console.log("no winner found");
+    //     document.getElementById("textStatus").innerHTML = "It's a tie!";
+    // }
+    // else if (winner != "no winner") {
+    //     console.log("winner exists");
+    //     document.getElementById("textStatus").innerHTML = winner + " wins!";
+    //     console.log(winner + " wins!");
+    // }
+    // return winner;
 
-function checkX(address){
+function checkPlayer(address){
     address = parseInt(address);
-    const element = document.querySelector("[data-address=" + address + "]");
-    if (element.dataset.status == "X") return true;
-    // else return false; - No idea if this is required
+    const element = document.querySelector("[data-address=\"" + address + "\"]");
+    switch (element.dataset.status){
+        case "X":
+            return "X";
+        case "O":
+            return "O";
+    }
+    return console.log("CRITICAL FAILURE!!");
 }
 
 function startGame(){
