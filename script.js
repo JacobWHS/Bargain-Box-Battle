@@ -97,10 +97,6 @@ function placeMoveCPU(move){
     element.setAttribute("data-status", "O");
 }
 
-function checkActCPU(){
-    console.log("checkActCPU Stub --");
-}
-
 function pcTurn(){
     // Full board check
     let winner = "no winner";
@@ -127,10 +123,6 @@ function pcTurn(){
             }
             else x_count = 0;
         }
-        // if (box == 0 || box == 3 || box == 6) placeMoveCPU(checkActCPU());
-        // if (box == 0 || box == 1 || box == 2) placeMoveCPU(checkActCPU());
-        // if (box == 0 || box == 4 || box == 8) placeMoveCPU(checkActCPU());
-        // if (box == 2 || box == 4 || box == 6) placeMoveCPU(checkActCPU());
         box++;  
     }   
     for (let cnt = 1; cnt <= 9; cnt++){
