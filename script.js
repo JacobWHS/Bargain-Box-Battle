@@ -110,7 +110,7 @@ function pcTurn(){
     // let x = 0;
     // let o = 0;
     let board = document.getElementById("board");
-    let bttn = document.getElementById("reset");
+    let bttn = document.getElementById("reset"); // gtest
     // console.log(board.dataset.test);
     let tempMove = 0;
     while (move == -1) {
