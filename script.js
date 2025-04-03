@@ -66,7 +66,7 @@ bttnCont.appendChild(rstBttn);
 // }
 
 function placeMove(id){
-    let winner = checkWinner();
+    let winner = checkWinner("X");
     let textStatus = "unset status";
     if (winner == false){
         if (id.dataset.status == "-"){
@@ -90,7 +90,7 @@ function placeMoveCPU(move){
 }
 
 function pcTurn(){
-    alert("pcTurn()");
+    console.log("pcTurn()");
     // Full board check
     let winner = "no winner";
     let move = -1;
@@ -158,7 +158,7 @@ function checkWinner(player){
     while (winner == false && box < 9 && fullBoard == false) {
         let ctrl = board.children[box].dataset.status;
         if (ctrl == player) {
-            console.log("CHECKACT CALLING");
+            console.log("CHECKACT CHECKING " + player);
             if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
             if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
             if (box == 0 || box == 4 || box == 8) if (checkAct(box, player, "d")) winner = player;
@@ -261,7 +261,7 @@ function startGameBak(){
         placeTurn(player, move);
         // alert("placeTurn finished, move to displayBoard.");
         // Board Display
-        alert("Checking winner for " + displayBoard());
+        console.log("Checking winner for " + displayBoard());
         // JW: function checkWinner(move){
         if (checkWinner(move, player)) gameWinner = player;
         else if (!isntFull()) {
