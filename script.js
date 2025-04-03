@@ -1,7 +1,5 @@
 // CAUTION: THIS CODE MAY CAUSE YOU TO LOSE BRAIN CELLS.
-
 // IT IS STRICTLY RECOMMENDED THAT VIEWERS CARRY INTELLIGENCE QUOTIENT SUPPLEMENTS WHEN OBSERVING SUCH CODE.
-
 // THANK YOU FOR YOUR COMPLIANCE.
 
 
@@ -10,6 +8,8 @@
 var board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]];
 
 // WIN ARRAYS
+var player = "X";
+var fullBoard = false;
 var goodMoves = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 var hBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 var vBoard = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
@@ -22,9 +22,8 @@ var dBoard = [[1, 5, 9], [3, 5, 7], [9, 5, 1]];
 // Tile Creation
 let bParent = document.getElementById("board");
 for (let cnt = 1; cnt <= 9; cnt++){
-    console.log(cnt);
     let tile = document.createElement("div");
-    tile.onclick = function() { placeMove(this); }
+    tile.onclick = function() { player = "X"; placeMove(this); }
     tile.classList.add("div" + cnt);
     tile.dataset.address = cnt;
     tile.dataset.status = "-";
@@ -67,33 +66,21 @@ bttnCont.appendChild(rstBttn);
 // }
 
 function placeMove(id){
-    let player = localStorage.getItem("player");
     let winner = checkWinner();
-    if (winner == "no winner"){
+    let textStatus = "unset status";
+    if (winner == false){
         if (id.dataset.status == "-"){
             // id.innerHTML = id.innerHTML.replace("-", player);
             id.setAttribute("data-status", player);
-            winner = checkWinner();
-            console.log("placeMove() winner = " + winner);
-            if (winner == "no winner"){
-                if (player == "X"){ 
-                    console.log(player);
-                    player = "O";
-                    console.log(player);
-                    pcTurn();
-                }
-                else player = "X";
-                localStorage.setItem("player", player);
-                document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
-                console.log("TURN SWAPPED, IHTML MODIFIED.")
+            winner = checkWinner("X");
+            if (winner == false){
+                pcTurn();
             }
+            textStatus = player + ", it's your turn!";
         }
-        else document.getElementById("textStatus").innerHTML = "This spot's full, please try again.";
-            // alert("This spot's full!"); // TODO: Change text status instead of alert
-        // else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
-        // else alert("someone's already won! please reload the page.")
+        else textStatus = "This spot's full, please try again.";
+        document.getElementById("textStatus").innerHTML = textStatus;
     }
-    else document.getElementById("textStatus").innerHTML = "The game has already ended, if you'd like to play again, press the \"Play Again\" button.";
 }
 
 function placeMoveCPU(move){
@@ -129,67 +116,46 @@ function pcTurn(){
         else x_count = 0;
         move = tempMove;
     }
-        placeMoveCPU(move);
+    placeMoveCPU(move);
+    winner = checkWinner("O");
 }   
-    // for (let cnt = 1; cnt <= 9; cnt++){
-    //     let spot = document.getElementsByClassName("div" + cnt)[0];
-    //     if (spot.dataset.status == "-") break;
-    //     if (cnt == 9) winner = "FULL";
-    // }
-    // if (winner == "FULL"){
-    //     console.log("no winner found");
-    //     document.getElementById("textStatus").innerHTML = "It's a tie!";
-    // }
-    // else if (winner != "no winner") {
-    //     console.log("winner exists");
-    //     document.getElementById("textStatus").innerHTML = winner + " wins!";
-    //     console.log(winner + " wins!");
-    // }
-    // return winner;
 
 function checkPlayer(address){
     address = parseInt(address);
     const element = document.querySelector("[data-address=\"" + address + "\"]");
-    switch (element.dataset.status){
+    switch (element.dataset.status){ // i love switch statements
         case "X":
             return "X";
         case "O":
             return "O";
+        default:
+            return "-"; // EMPTY
     }
-    return console.log("CRITICAL FAILURE!!");
 }
 
 function startGame(){
     let counter = Math.round(Math.random());
-    if (counter == 0) localStorage.setItem("player", "X");
-    else localStorage.setItem("player", "O");
-    localStorage.setItem("player", "X"); // FORCED TO NULLIFY THE RANDOMIZATION
-    let player = localStorage.getItem("player");
     // console.log("GAME STARTED startGame()");
     document.getElementById("textStatus").innerHTML = player + ", it's your turn!";
 }
 
 
 //1-9 Div checking, maybe??
-function checkWinner(){
-    let player = localStorage.getItem("player");
+function checkWinner(player){
     // Full board check
-    let winner = "no winner";
-    // let x = 0;
-    // let o = 0;
+    let winner = false;
     let board = document.getElementById("board");
     let bttn = document.getElementById("reset");
-    // console.log(board.dataset.test);
     let box = 0;
-    while (winner == "no winner" && box < 9) { // replace 9 with board.childNodes.length
-        // console.log(box);
-        // console.log("cn - 1" + board.childNodes.length - 1);
-        // console.log("cn " + board.childNodes.length);
-        // if (board.children[box].innerHTML == player) {
-        //     if (checkAct(box, player)) winner = player;
-        //     if (checkAct(box, player, 3)) winner = player;
-        // }
-        // Check horizontal win
+    for (let cnt = 1; cnt <= 9; cnt++){
+        let spot = document.getElementsByClassName("div" + cnt)[0];
+        if (spot.dataset.status == "-") break;
+        if (cnt == 9){
+            fullBoard = true;
+            winner = true;
+        } 
+    }
+    while (winner == false && box < 9 && fullBoard == false) {
         let ctrl = board.children[box].dataset.status;
         if (ctrl == player) {
             console.log("CHECKACT CALLING");
@@ -199,28 +165,9 @@ function checkWinner(){
             if (box == 2 || box == 4 || box == 6) if (checkAct(box, player, "a")) winner = player;
             console.log("checkWinner() winner = " + winner);
         }
-        // else if (box == 0 || box == 1 || box == 2){
-        //     let ctrl = board.children[box].innerHTML;
-        //     if (ctrl == player) {
-        //         console.log("CHECKCOL CALLING");
-        //         if (checkAct(box, player, "v")) winner = player;
-        //         console.log("winner = " + winner);
-        //         }
-        //     }
-        box++;
-        // else if (winner == "" && (box == 2 || box == 5 || box == 8)){
-            
-        // if (board.childNodes[i].className == "4") {
-        //   winner = board.childNodes[i];
-        //   break;
-        // }     
+        box++;   
     }   
-    for (let cnt = 1; cnt <= 9; cnt++){
-        let spot = document.getElementsByClassName("div" + cnt)[0];
-        if (spot.dataset.status == "-") break;
-        if (cnt == 9) winner = "FULL";
-    }
-    if (winner != "no winner"){
+    if (winner == true){
         board.style.transition = "opacity 0.5s";
         board.style.opacity = 0;
         setTimeout(function() {
@@ -231,11 +178,11 @@ function checkWinner(){
             board.style.display = "none";
           }, 500);
     }
-    if (winner == "FULL"){
+    if (fullBoard == true){ // Formerly FULL
         console.log("no winner found");
         document.getElementById("textStatus").innerHTML = "It's a tie!";
     }
-    else if (winner != "no winner") {
+    else if (winner == true) {
         console.log("winner exists");
         document.getElementById("textStatus").innerHTML = winner + " wins!";
         console.log(winner + " wins!");
@@ -245,7 +192,6 @@ function checkWinner(){
 
 function checkAct(box, player, type="h"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
     let board = document.getElementById("board");
-    console.log("checkAct(" + box + ", " + player + ")");
     console.log("Specified Act: " + type);
     switch (type){
         case "h": // Horizontal
