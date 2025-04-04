@@ -7,9 +7,13 @@
 
 var board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]];
 
-// WIN ARRAYS
+// OTHER
 var player = "X";
 var fullBoard = false;
+var boardElem = document.getElementById("board");
+var bttnElem = document.getElementById("reset");
+
+// WIN ARRAYS
 var goodMoves = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 var hBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 var vBoard = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
@@ -65,6 +69,8 @@ bttnCont.appendChild(rstBttn);
 //     target.innerHTML = value;
 // }
 
+
+// Player move placement
 function placeMove(id){
     let winner = checkWinner("X");
     let textStatus = "unset status";
@@ -73,9 +79,7 @@ function placeMove(id){
             // id.innerHTML = id.innerHTML.replace("-", player);
             id.setAttribute("data-status", player);
             winner = checkWinner("X");
-            if (winner == false){
-                pcTurn();
-            }
+            if (winner == false) pcTurn();
             textStatus = player + ", it's your turn!";
         }
         else textStatus = "This spot's full, please try again.";
@@ -83,22 +87,20 @@ function placeMove(id){
     }
 }
 
+// Computer move placement
 function placeMoveCPU(move){
     move = parseInt(move);
     const element = document.querySelector("[data-address=\"" + move + "\"]");
     element.setAttribute("data-status", "O");
 }
 
+
+// PC turn prediction
 function pcTurn(){
     console.log("pcTurn()");
     // Full board check
     let winner = "no winner";
     let move = -1;
-    // let x = 0;
-    // let o = 0;
-    let board = document.getElementById("board");
-    let bttn = document.getElementById("reset");
-    // console.log(board.dataset.test);
     let tempMove = 0;
     while (move == -1) {
         // Check Rows
@@ -120,6 +122,11 @@ function pcTurn(){
     winner = checkWinner("O");
 }   
 
+/**
+ * 
+ * @param {integer} address 
+ * @returns string
+ */
 function checkPlayer(address){
     address = parseInt(address);
     const element = document.querySelector("[data-address=\"" + address + "\"]");
@@ -133,6 +140,7 @@ function checkPlayer(address){
     }
 }
 
+
 function startGame(){
     let counter = Math.round(Math.random());
     // console.log("GAME STARTED startGame()");
@@ -144,19 +152,9 @@ function startGame(){
 function checkWinner(player){
     // Full board check
     let winner = false;
-    let board = document.getElementById("board");
-    let bttn = document.getElementById("reset");
     let box = 0;
-    for (let cnt = 1; cnt <= 9; cnt++){
-        let spot = document.getElementsByClassName("div" + cnt)[0];
-        if (spot.dataset.status == "-") break;
-        if (cnt == 9){
-            fullBoard = true;
-            winner = true;
-        } 
-    }
-    while (winner == false && box < 9 && fullBoard == false) {
-        let ctrl = board.children[box].dataset.status;
+    while (winner == false && box < 9 && !isFull()) {
+        let ctrl = boardElem.children[box].dataset.status;
         if (ctrl == player) {
             console.log("CHECKACT CHECKING " + player);
             if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
@@ -167,44 +165,49 @@ function checkWinner(player){
         }
         box++;   
     }   
-    if (winner == true){
-        board.style.transition = "opacity 0.5s";
-        board.style.opacity = 0;
-        setTimeout(function() {
-            bttn.style.transition = "left 0.5s";
-            bttn.style.left = -200;
-        }, 500);
-        setTimeout(function() {
-            board.style.display = "none";
-          }, 500);
-    }
-    if (fullBoard == true){ // Formerly FULL
-        console.log("no winner found");
-        document.getElementById("textStatus").innerHTML = "It's a tie!";
-    }
-    else if (winner == true) {
-        console.log("winner exists");
-        document.getElementById("textStatus").innerHTML = winner + " wins!";
-        console.log(winner + " wins!");
-    }
     return winner;
 }
 
+function displayStatus(){
+    let winner = checkWinner(player);
+    if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
+    else if (winner == true) document.getElementById("textStatus").innerHTML = player + " wins!";
+    if (winner == true){
+        boardElem.style.transition = "opacity 0.5s";
+        boardElem.style.opacity = 0;
+        setTimeout(function() {
+            bttnElem.style.transition = "left 0.5s";
+            bttnElem.style.left = -200;
+        }, 500);
+        setTimeout(function() {
+            boardElem.style.display = "none";
+          }, 500);
+    }
+}
+
+// Checks whether the board is full
+function isFull(){
+    for (let cnt = 1; cnt <= 9; cnt++){
+        let spot = document.getElementsByClassName("div" + cnt)[0];
+        if (spot.dataset.status == "-") return false;
+    }
+    return true;
+}
+
 function checkAct(box, player, type="h"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
-    let board = document.getElementById("board");
     console.log("Specified Act: " + type);
     switch (type){
         case "h": // Horizontal
-            if (board.children[box + 1].dataset.status == player && board.children[box + 2].dataset.status == player) return true;
+            if (boardElem.children[box + 1].dataset.status == player && boardElem.children[box + 2].dataset.status == player) return true;
             break;
         case "v": // Vertical
-            if (board.children[box + 3].dataset.status == player && board.children[box + 6].dataset.status == player) return true;
+            if (boardElem.children[box + 3].dataset.status == player && boardElem.children[box + 6].dataset.status == player) return true;
             break;
         case "d": // Diagonal
-            if (board.children[0].dataset.status == player && board.children[4].dataset.status == player && board.children[8].dataset.status == player) return true;
+            if (boardElem.children[0].dataset.status == player && boardElem.children[4].dataset.status == player && boardElem.children[8].dataset.status == player) return true;
             break;
         default: // Reverse Diagonal or Antidiagonal incase i need 1 word to make this look cleaner
-            if (board.children[2].dataset.status == player && board.children[4].dataset.status == player && board.children[6].dataset.status == player) return true;    
+            if (boardElem.children[2].dataset.status == player && boardElem.children[4].dataset.status == player && boardElem.children[6].dataset.status == player) return true;    
             break;
     }
     return false;
