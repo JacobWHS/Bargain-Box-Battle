@@ -97,7 +97,7 @@ function placeMoveCPU(move){
 
 // PC turn prediction
 function pcTurn(){
-    console.log("pcTurn()");
+    console.warn("pcTurn()");
     // Full board check
     let winner = "no winner";
     let move = -1;
@@ -123,7 +123,7 @@ function pcTurn(){
 }   
 
 /**
- * 
+ * checkPlayer - Returns the staus of a box (player/empty).
  * @param {integer} address 
  * @returns string
  */
@@ -156,7 +156,7 @@ function checkWinner(player){
     while (winner == false && box < 9 && !isFull()) {
         let ctrl = boardElem.children[box].dataset.status;
         if (ctrl == player) {
-            console.log("CHECKACT CHECKING " + player);
+            console.error("CHECKACT CHECKING " + player);
             if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
             if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
             if (box == 0 || box == 4 || box == 8) if (checkAct(box, player, "d")) winner = player;
@@ -194,6 +194,13 @@ function isFull(){
     return true;
 }
 
+/**
+ * checkAct - Player win condition check; based on selected method
+ * @param {integer} box 
+ * @param {string} player 
+ * @param {string} type 
+ * @returns boolean
+ */
 function checkAct(box, player, type="h"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
     console.log("Specified Act: " + type);
     switch (type){
@@ -217,10 +224,14 @@ function checkAct(box, player, type="h"){ // default param is "h" which means ho
     // else return false;
 }
 
+/**
+ * getSpot - Returns spot of selected ID
+ * @param {integer} id 
+ * @returns string
+ */
 function getSpot(id){
-    let spot = document.getElementsByClassName("div" + id)[0].innerHTML;
-    spot.replaceAll("<span>",""); spot.replaceAll("</span>","");
-    return spot;
+    let spot = document.getElementsByClassName("div" + id)[0];
+    return spot.dataset.status;
 }
 
 // function checkArray(player){
@@ -249,36 +260,36 @@ function getSpot(id){
 
 // startGame:
 //      Randomizes who goes first, asks for player input, calls legalMove.
-function startGameBak(){
-    // Turn Randomization
-    let counter = Math.round(Math.random());
-    if (counter == 0) player = "x";
-    else player = "o";
-    // Variable Predefinition
-    let gameWinner = "n";
-    while (gameWinner == "n"){
-        // Placing Move
-        let move = getTurn(player);
-        if (move == 0) break;
-        // alert("getTurn finished, move to placeTurn.");
-        placeTurn(player, move);
-        // alert("placeTurn finished, move to displayBoard.");
-        // Board Display
-        console.log("Checking winner for " + displayBoard());
-        // JW: function checkWinner(move){
-        if (checkWinner(move, player)) gameWinner = player;
-        else if (!isntFull()) {
-            alert(board);
-            // alert(board.includes("-"));
-            gameWinner = "d";
-        }
-        if (player == "x") player = "o";
-        else player = "x";
-    }
-    if (gameWinner == "d"){
-        alert("DRAW!");
-    }
-}
+// function startGameBak(){
+//     // Turn Randomization
+//     let counter = Math.round(Math.random());
+//     if (counter == 0) player = "x";
+//     else player = "o";
+//     // Variable Predefinition
+//     let gameWinner = "n";
+//     while (gameWinner == "n"){
+//         // Placing Move
+//         let move = getTurn(player);
+//         if (move == 0) break;
+//         // alert("getTurn finished, move to placeTurn.");
+//         placeTurn(player, move);
+//         // alert("placeTurn finished, move to displayBoard.");
+//         // Board Display
+//         console.log("Checking winner for " + displayBoard());
+//         // JW: function checkWinner(move){
+//         if (checkWinner(move, player)) gameWinner = player;
+//         else if (!isntFull()) {
+//             alert(board);
+//             // alert(board.includes("-"));
+//             gameWinner = "d";
+//         }
+//         if (player == "x") player = "o";
+//         else player = "x";
+//     }
+//     if (gameWinner == "d"){
+//         alert("DRAW!");
+//     }
+// }
 
 
 // placeTurn:
@@ -304,41 +315,41 @@ function startGameBak(){
 
 // displayBoard:
 //      Displays the board in the typical 2D Tic Tac Toe fashion.
-function displayBoard(){
-    let boardDisplay = "\n";
-    for (let row = 0; row <= 2; row++){
-        for (let col = 0; col <= 2; col++){
-            boardDisplay += board[row][col]
-            if (col < 2){
-                boardDisplay += " | ";
-            }
-        }
-        boardDisplay += "\n";
-    }
-    //alert(boardDisplay);
-    return boardDisplay;
-}
+// function displayBoard(){
+//     let boardDisplay = "\n";
+//     for (let row = 0; row <= 2; row++){
+//         for (let col = 0; col <= 2; col++){
+//             boardDisplay += board[row][col]
+//             if (col < 2){
+//                 boardDisplay += " | ";
+//             }
+//         }
+//         boardDisplay += "\n";
+//     }
+//     //alert(boardDisplay);
+//     return boardDisplay;
+// }
 
 // getTurn:
 //      Prompts the player to make their turn, validates and returns it.
-function getTurn(player){
-    player = player.toUpperCase();
-    let move = parseInt(prompt(displayBoard() + "Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
-    if (move == 0) return 0;
-    while (isNaN(move)) {
-        alert("The specified message was not a valid space. Let's try that again!");
-        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
-    }
-    while (goodMoves.includes(move) == false) {
-        alert("The specified number " + move + " was not a valid space. Let's try that again!");
-        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."  + displayBoard()));
-    }
-    while (legalMove(move) != true) {
-        alert("Uh oh! This spot seems to be taken, please try again.");
-        move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
-    }
-    return move;
-}
+// function getTurn(player){
+//     player = player.toUpperCase();
+//     let move = parseInt(prompt(displayBoard() + "Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."));
+//     if (move == 0) return 0;
+//     while (isNaN(move)) {
+//         alert("The specified message was not a valid space. Let's try that again!");
+//         move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
+//     }
+//     while (goodMoves.includes(move) == false) {
+//         alert("The specified number " + move + " was not a valid space. Let's try that again!");
+//         move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9."  + displayBoard()));
+//     }
+//     while (legalMove(move) != true) {
+//         alert("Uh oh! This spot seems to be taken, please try again.");
+//         move = parseInt(prompt("Now, player " + player + " the floor is yours, which spot would you like to go on? Choose from 1-9." + displayBoard()));
+//     }
+//     return move;
+// }
 
 // legalMove:
 //      Validates player's move, checking whether the space is real or not and if the space is taken.
