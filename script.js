@@ -61,16 +61,10 @@ bttnCont.appendChild(rstBttn);
 // FUNCTIONS
 
 
-// THANK YOU FOR YOUR SERVICE, OLD FRIEND!
-// function dataChangeTest(){
-//     let target = document.querySelector(".parent div:nth-child(1)");
-//     target.setAttribute("data-status", "x");
-//     let value = target.getAttribute('data-status');
-//     target.innerHTML = value;
-// }
-
-
-// Player move placement
+/**
+ * placeMove - Player move placement
+ * @param {integer} move 
+ */
 function placeMove(id){
     let winner = checkWinner("X");
     let textStatus = "unset status";
@@ -82,12 +76,19 @@ function placeMove(id){
             if (winner == false) pcTurn();
             textStatus = player + ", it's your turn!";
         }
-        else textStatus = "This spot's full, please try again.";
+        else {
+            // console.warn("SPOT FULL TEST"); 
+            textStatus = "This spot's full, please try again.";
+        }
         document.getElementById("textStatus").innerHTML = textStatus;
+        displayStatus();
     }
 }
 
-// Computer move placement
+/**
+ * placeMoveCPU - Computer move placement
+ * @param {integer} move 
+ */
 function placeMoveCPU(move){
     move = parseInt(move);
     const element = document.querySelector("[data-address=\"" + move + "\"]");
@@ -95,7 +96,9 @@ function placeMoveCPU(move){
 }
 
 
-// PC turn prediction
+/**
+ * pcTurn - PC turn prediction
+ */
 function pcTurn(){
     console.warn("pcTurn()");
     // Full board check
@@ -122,6 +125,16 @@ function pcTurn(){
     winner = checkWinner("O");
 }   
 
+function pcCheckRow(row){
+    let x_count = 0;
+    for (let box = row + 1; box < row + 4; box++){ 
+        // if box contains x add 1 to x_count
+        if (document.querySelector("[data-address=\"" + box + "\"]").includes == "X") x_count++;
+    }
+    if (x_count < 2) return false;
+    else return true;
+}
+
 /**
  * checkPlayer - Returns the staus of a box (player/empty).
  * @param {integer} address 
@@ -140,7 +153,9 @@ function checkPlayer(address){
     }
 }
 
-
+/**
+ * startGame - Turn & Icon randomization (Disabled)
+ */
 function startGame(){
     let counter = Math.round(Math.random());
     // console.log("GAME STARTED startGame()");
@@ -148,7 +163,11 @@ function startGame(){
 }
 
 
-//1-9 Div checking, maybe??
+/**
+ * checkWinner - Checks the winner of the game based on a set of hardcoded patterns.
+ * @param {string} player 
+ * @returns 
+ */
 function checkWinner(player){
     // Full board check
     let winner = false;
@@ -169,7 +188,6 @@ function checkWinner(player){
 }
 
 function displayStatus(){
-    let winner = checkWinner(player);
     if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
     else if (winner == true) document.getElementById("textStatus").innerHTML = player + " wins!";
     if (winner == true){
