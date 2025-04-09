@@ -81,7 +81,7 @@ function placeMove(id){
             textStatus = "This spot's full, please try again.";
         }
         document.getElementById("textStatus").innerHTML = textStatus;
-        displayStatus();
+        // displayStatus();
     }
 }
 
@@ -94,7 +94,6 @@ function placeMoveCPU(move){
     const element = document.querySelector("[data-address=\"" + move + "\"]");
     element.setAttribute("data-status", "O");
 }
-
 
 /**
  * pcTurn - PC turn prediction
@@ -109,10 +108,11 @@ function pcTurn(){
         // Check Rows
         let x_count = 0;
         for (let box = 1; box <= 7; box += 3){
-            for (let col = 0; col <= 2; col++){
-                if (checkPlayer(box + col) == "X") x_count++;
-                else tempMove = col;
-            }
+            if (pcCheckRow(box)) move = pcBlockRow(box);
+        }
+        // Check Cols
+        for (let box = 1; box <= 3; box++){
+            if (pcCheckCol(box)) move = pcBlockCol(box);
         }
         if (x_count == 2){ 
             move = tempMove;
@@ -125,7 +125,52 @@ function pcTurn(){
     winner = checkWinner("O");
 }   
 
+function pcBlockRow(row){
+    for (let box = 1; box < 9; box++){
+        if (checkPlayer(box) == "-") return box;
+    }
+}
+
+function pcBlockCol(col){
+    console.log("pcBlockCol(" + col + ")");
+}
+
+/**
+ * pcCheckRow - Checks whether a row's x count is greater than two or not.
+ * @param {integer} row 
+ * @returns 
+ */
 function pcCheckRow(row){
+    let x_count = 0;
+    for (let box = row + 1; box < row + 4; box++){ 
+        // if box contains x add 1 to x_count
+        if (document.querySelector("[data-address=\"" + box + "\"]").includes == "X") x_count++;
+    }
+    if (x_count < 2) return false;
+    else return true;
+}
+
+/**
+ * pcCheckRow - Checks whether a row's x count is greater than two or not.
+ * @param {integer} row 
+ * @returns 
+ */
+function pcCheckCol(col){
+    let x_count = 0;
+    for (let box = row + 1; box < row + 4; box++){ 
+        // if box contains x add 1 to x_count
+        if (document.querySelector("[data-address=\"" + box + "\"]").includes == "X") x_count++;
+    }
+    if (x_count < 2) return false;
+    else return true;
+}
+
+/**
+ * pcCheckRow - Checks whether a row's x count is greater than two or not.
+ * @param {integer} row 
+ * @returns 
+ */
+function pcCheckDiag(){
     let x_count = 0;
     for (let box = row + 1; box < row + 4; box++){ 
         // if box contains x add 1 to x_count
@@ -154,7 +199,7 @@ function checkPlayer(address){
 }
 
 /**
- * startGame - Turn & Icon randomization (Disabled)
+ * startGame - Turn & Icon randomization. (Disabled)
  */
 function startGame(){
     let counter = Math.round(Math.random());
@@ -187,6 +232,10 @@ function checkWinner(player){
     return winner;
 }
 
+/**
+ * displayStatus - Displays the status of the game. (Turns, win conds)
+ * Also fades box out (BROKEN*)
+ */
 function displayStatus(){
     if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
     else if (winner == true) document.getElementById("textStatus").innerHTML = player + " wins!";
@@ -203,7 +252,10 @@ function displayStatus(){
     }
 }
 
-// Checks whether the board is full
+/**
+ * isFull - Checks whether the board is full.
+ * @returns boolean
+ */
 function isFull(){
     for (let cnt = 1; cnt <= 9; cnt++){
         let spot = document.getElementsByClassName("div" + cnt)[0];
