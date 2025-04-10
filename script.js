@@ -92,6 +92,7 @@ function placeMove(id){
 function placeMoveCPU(move){
     move = parseInt(move);
     const element = document.querySelector("[data-address=\"" + move + "\"]");
+    console.log("element = " + element);
     element.setAttribute("data-status", "O");
 }
 
@@ -103,30 +104,26 @@ function pcTurn(){
     // Full board check
     let winner = "no winner";
     let move = -1;
-    let tempMove = 0;
     while (move == -1) {
+        console.log("Move is equal to -1!")
         // Check Rows
-        let x_count = 0;
         for (let box = 1; box <= 7; box += 3){
             if (pcCheckRow(box)) move = pcBlockRow(box);
         }
-        // Check Cols
-        for (let box = 1; box <= 3; box++){
-            if (pcCheckCol(box)) move = pcBlockCol(box);
-        }
-        if (x_count == 2){ 
-            move = tempMove;
-            placeMoveCPU(move);
-        }
-        else x_count = 0;
-        move = tempMove;
+        // move = 0; // Temporary Anti-crash - Remove upon replacement
     }
+        // // Check Cols
+        // for (let box = 1; box <= 3; box++){
+        //     if (pcCheckCol(box)) move = pcBlockCol(box);
+        // }
     placeMoveCPU(move);
     winner = checkWinner("O");
 }   
 
 function pcBlockRow(row){
-    for (let box = 1; box < 9; box++){
+    console.log("pcBlockRow(" + row + ")");
+    for (let box = row + 1; box < row + 3; box++){
+        console.log("pcBlockRow - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
     }
 }
@@ -142,9 +139,10 @@ function pcBlockCol(col){
  */
 function pcCheckRow(row){
     let x_count = 0;
-    for (let box = row + 1; box < row + 4; box++){ 
+    for (let box = row + 1; box < row + 3; box++){ 
         // if box contains x add 1 to x_count
-        if (document.querySelector("[data-address=\"" + box + "\"]").includes == "X") x_count++;
+        if (checkPlayer(box) == "X") x_count++;
+        console.log("x_count: " + x_count);
     }
     if (x_count < 2) return false;
     else return true;
@@ -157,9 +155,9 @@ function pcCheckRow(row){
  */
 function pcCheckCol(col){
     let x_count = 0;
-    for (let box = row + 1; box < row + 4; box++){ 
+    for (let box = col + 1; box < col + 3; box++){ 
         // if box contains x add 1 to x_count
-        if (document.querySelector("[data-address=\"" + box + "\"]").includes == "X") x_count++;
+        if (checkPlayer(box) == "X") x_count++;
     }
     if (x_count < 2) return false;
     else return true;
@@ -174,7 +172,7 @@ function pcCheckDiag(){
     let x_count = 0;
     for (let box = row + 1; box < row + 4; box++){ 
         // if box contains x add 1 to x_count
-        if (document.querySelector("[data-address=\"" + box + "\"]").includes == "X") x_count++;
+        if (checkPlayer(box) == "X") x_count++;
     }
     if (x_count < 2) return false;
     else return true;
@@ -187,8 +185,7 @@ function pcCheckDiag(){
  */
 function checkPlayer(address){
     address = parseInt(address);
-    const element = document.querySelector("[data-address=\"" + address + "\"]");
-    switch (element.dataset.status){ // i love switch statements
+    switch (document.querySelector("[data-address=\"" + address + "\"]").dataset.status){ // i love switch statements
         case "X":
             return "X";
         case "O":
