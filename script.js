@@ -90,9 +90,10 @@ function placeMove(id){
  * @param {integer} move 
  */
 function placeMoveCPU(move){
+    console.log("move - " + move);
     move = parseInt(move);
     const element = document.querySelector("[data-address=\"" + move + "\"]");
-    console.log("element = " + element);
+    console.log("element = " + move);
     element.setAttribute("data-status", "O");
 }
 
@@ -104,18 +105,17 @@ function pcTurn(){
     // Full board check
     let winner = "no winner";
     let move = -1;
-    while (move == -1) {
-        console.log("Move is equal to -1!")
-        // Check Rows
-        for (let box = 1; box <= 7; box += 3){
-            if (pcCheckRow(box)) move = pcBlockRow(box);
-        }
-        // move = 0; // Temporary Anti-crash - Remove upon replacement
+    // console.log("Move is equal to -1!")
+    // Check Rows
+    for (let box = 1; box <= 7; box += 3){
+        if (pcCheckRow(box)) move = pcBlockRow(box);
     }
-        // // Check Cols
-        // for (let box = 1; box <= 3; box++){
-        //     if (pcCheckCol(box)) move = pcBlockCol(box);
-        // }
+    // move = 0; // Temporary Anti-crash - Remove upon replacement
+    // Check Cols
+    for (let box = 1; box <= 3; box++){
+        if (pcCheckCol(box)) move = pcBlockCol(box);
+    }
+    if (move == -1) move = randMove();
     placeMoveCPU(move);
     winner = checkWinner("O");
 }   
@@ -178,6 +178,17 @@ function pcCheckDiag(){
     else return true;
 }
 
+
+/**
+ * getRndInteger - Generates a random value between the specified digits.
+ * @param {integer} min 
+ * @param {integer} max 
+ * @returns integer
+ */
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
+
 /**
  * checkPlayer - Returns the staus of a box (player/empty).
  * @param {integer} address 
@@ -193,6 +204,14 @@ function checkPlayer(address){
         default:
             return "-"; // EMPTY
     }
+}
+
+function randMove(){
+    let move;
+    do {
+        move = getRndInteger(1, 9);
+    } while(checkPlayer(move) != "-");
+    return move;
 }
 
 /**
