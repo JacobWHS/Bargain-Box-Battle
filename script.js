@@ -15,6 +15,7 @@ var bttnElem = document.getElementById("reset");
 
 // WIN ARRAYS
 var goodMoves = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+var movesTaken = [];
 var hBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 var vBoard = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
 var dBoard = [[1, 5, 9], [3, 5, 7], [9, 5, 1]];
@@ -66,6 +67,12 @@ bttnCont.appendChild(rstBttn);
  * @param {integer} move 
  */
 function placeMove(id){
+    let moveID = id.dataset.address;
+    console.log(" - ID " + moveID);
+    goodMoves.slice(goodMoves.indexOf(moveID) - 1);
+    movesTaken.push(moveID);
+    console.log(goodMoves.toString());
+    console.log(movesTaken.toString());
     let winner = checkWinner("X");
     let textStatus = "unset status";
     if (winner == false){
@@ -121,7 +128,6 @@ function pcTurn(){
 }   
 
 function pcBlockRow(row){
-    console.log("pcBlockRow(" + row + ")");
     for (let box = row + 1; box < row + 3; box++){
         console.log("pcBlockRow - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
@@ -129,7 +135,10 @@ function pcBlockRow(row){
 }
 
 function pcBlockCol(col){
-    console.log("pcBlockCol(" + col + ")");
+    for (let box = col + 3; box < col + 1; box++){
+        console.log("pcBlockCol - BOX: " + box);
+        if (checkPlayer(box) == "-") return box;
+    }
 }
 
 /**
