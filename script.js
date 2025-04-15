@@ -68,11 +68,9 @@ bttnCont.appendChild(rstBttn);
  */
 function placeMove(id){
     let moveID = id.dataset.address;
-    console.log(" - ID " + moveID);
+    moveID = parseInt(moveID);
     goodMoves.slice(goodMoves.indexOf(moveID) - 1);
     movesTaken.push(moveID);
-    console.log(goodMoves.toString());
-    console.log(movesTaken.toString());
     let winner = checkWinner("X");
     let textStatus = "unset status";
     if (winner == false){
@@ -97,10 +95,13 @@ function placeMove(id){
  * @param {integer} move 
  */
 function placeMoveCPU(move){
-    console.log("move - " + move);
+    goodMoves.slice(goodMoves.indexOf(move) - 1);
+    movesTaken.push(move);
+
+    console.log(" - move - " + move);
     move = parseInt(move);
     const element = document.querySelector("[data-address=\"" + move + "\"]");
-    console.log("element = " + move);
+    console.log(" - element = " + move);
     element.setAttribute("data-status", "O");
 }
 
@@ -128,14 +129,14 @@ function pcTurn(){
 }   
 
 function pcBlockRow(row){
-    for (let box = row + 1; box < row + 3; box++){
+    for (let box = row; box < row + 3; box++){
         console.log("pcBlockRow - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
     }
 }
 
 function pcBlockCol(col){
-    for (let box = col + 3; box < col + 1; box++){
+    for (let box = col; box < 10; box += 3){
         console.log("pcBlockCol - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
     }
@@ -148,10 +149,15 @@ function pcBlockCol(col){
  */
 function pcCheckRow(row){
     let x_count = 0;
-    for (let box = row + 1; box < row + 3; box++){ 
+    for (let box = row; box < row + 3; box++){ 
         // if box contains x add 1 to x_count
-        if (checkPlayer(box) == "X") x_count++;
-        console.log("x_count: " + x_count);
+        if (movesTaken.includes(box)){
+            x_count++;
+            console.log(" - x_count: " + x_count + " | index: " + movesTaken.indexOf(box));
+        }
+        // else {
+        //     console.log(box + " not in " + movesTaken.toString());
+        // }
     }
     if (x_count < 2) return false;
     else return true;
@@ -164,9 +170,9 @@ function pcCheckRow(row){
  */
 function pcCheckCol(col){
     let x_count = 0;
-    for (let box = col + 1; box < col + 3; box++){ 
+    for (let box = col; box < 10; box += 3){ 
         // if box contains x add 1 to x_count
-        if (checkPlayer(box) == "X") x_count++;
+        if (movesTaken.includes(box)) x_count++;
     }
     if (x_count < 2) return false;
     else return true;
@@ -250,7 +256,7 @@ function checkWinner(player){
             if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
             if (box == 0 || box == 4 || box == 8) if (checkAct(box, player, "d")) winner = player;
             if (box == 2 || box == 4 || box == 6) if (checkAct(box, player, "a")) winner = player;
-            console.log("checkWinner() winner = " + winner);
+            console.log(" - checkWinner() winner = " + winner);
         }
         box++;   
     }   
@@ -297,7 +303,7 @@ function isFull(){
  * @returns boolean
  */
 function checkAct(box, player, type="h"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
-    console.log("Specified Act: " + type);
+    console.log(" - Specified Act: " + type.toUpperCase());
     switch (type){
         case "h": // Horizontal
             if (boardElem.children[box + 1].dataset.status == player && boardElem.children[box + 2].dataset.status == player) return true;
