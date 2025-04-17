@@ -69,7 +69,9 @@ bttnCont.appendChild(rstBttn);
 function placeMove(id){
     let moveID = id.dataset.address;
     moveID = parseInt(moveID);
-    goodMoves.slice(goodMoves.indexOf(moveID) - 1);
+    console.log(" - Before " + goodMoves.toString());
+    goodMoves.splice(goodMoves.indexOf(moveID), 1);
+    console.log(" - After " + goodMoves.toString());
     movesTaken.push(moveID);
     let winner = checkWinner("X");
     let textStatus = "unset status";
@@ -88,6 +90,7 @@ function placeMove(id){
         document.getElementById("textStatus").innerHTML = textStatus;
         // displayStatus();
     }
+    else displayStatus();
 }
 
 /**
@@ -143,6 +146,13 @@ function pcBlockCol(col){
     }
 }
 
+function pcBlockDia(col){
+    for (let box = col; box < 10; box += 3){
+        console.log("pcBlockDia - BOX: " + box);
+        if (checkPlayer(box) == "-") return box;
+    }
+}
+
 /**
  * pcCheckRow - Checks whether a row's x count is greater than two or not.
  * @param {integer} row 
@@ -164,7 +174,7 @@ function pcCheckRow(row){
     }
     if (x_count == 2 && count != 3){ 
         console.error("checkrow true");
-        debugger;
+        // debugger;
         return true; }
     else return false;
 }
@@ -191,8 +201,7 @@ function pcCheckCol(col){
 }
 
 /**
- * pcCheckRow - Checks whether a row's x count is greater than two or not.
- * @param {integer} row 
+ * pcCheckDiag - Checks whether the diagonal's x count is greater than two or not.
  * @returns 
  */
 function pcCheckDiag(){
@@ -234,7 +243,12 @@ function checkPlayer(address){
 }
 
 function randMove(){
-    let move;
+    // let move = 1; // MR M METHOD - BROKEN
+    // while(checkPlayer(move) != "-") {
+    //     if (!isFull()) break;
+    //     move = getRndInteger(1, 9);
+    // }
+    let move; // DO WHILE METHOD - WORKS PERFECTLY* (MAYBE?)
     do {
         move = getRndInteger(1, 9);
     } while(checkPlayer(move) != "-");
@@ -260,7 +274,8 @@ function checkWinner(player){
     // Full board check
     let winner = false;
     let box = 0;
-    while (winner == false && box < 9 && !isFull()) {
+    let full = isFull();
+    while (winner == false && box < 9 && full == false) {
         let ctrl = boardElem.children[box].dataset.status;
         if (ctrl == player) {
             console.error("CHECKACT CHECKING " + player);
@@ -280,9 +295,9 @@ function checkWinner(player){
  * Also fades box out (BROKEN*)
  */
 function displayStatus(){
-    if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
-    else if (winner == true) document.getElementById("textStatus").innerHTML = player + " wins!";
-    if (winner == true){
+    if (winner == true) document.getElementById("textStatus").innerHTML = player + " wins!";
+    else if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
+    if (winner == true || isFull()){
         boardElem.style.transition = "opacity 0.5s";
         boardElem.style.opacity = 0;
         setTimeout(function() {
@@ -300,11 +315,11 @@ function displayStatus(){
  * @returns boolean
  */
 function isFull(){
-    for (let cnt = 1; cnt <= 9; cnt++){
-        let spot = document.getElementsByClassName("div" + cnt)[0];
-        if (spot.dataset.status == "-") return false;
-    }
-    return true;
+    console.log("\n--\nIS FULL IS BEING CALLED \n--\n ");
+    // for (let box = 1; box <= 9; box++){
+    //     if (checkPlayer(box) == "-") return false;
+    // }
+    // return true;
 }
 
 /**
