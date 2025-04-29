@@ -116,15 +116,18 @@ function pcTurn(){
     // console.log("Move is equal to -1!")
     // Check Rows
     for (let box = 1; box <= 7; box += 3){
-        if (pcCheckRow(box)) move = pcBlockRow(box);
+        if (pcCheckRow(box)) move = parseInt(pcBlockRow(box));
+        console.log(" - ROW Selected Move " + move);
     }
     // move = 0; // Temporary Anti-crash - Remove upon replacement
     // Check Cols
     for (let box = 1; box <= 3; box++){
-        if (pcCheckCol(box)) move = pcBlockCol(box);
+        if (pcCheckCol(box)) move = parseInt(pcBlockCol(box));
+        console.log(" - COL Selected Move " + move);
     }
     if (move == -1) move = randMove();
     placeMoveCPU(move);
+    console.log(" - Attempted to place a move at " + move);
     winner = checkWinner("O");
 }   
 
