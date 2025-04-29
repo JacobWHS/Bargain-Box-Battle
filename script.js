@@ -133,7 +133,6 @@ function pcBlockRow(row){
         console.log("pcBlockRow - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
     }
-    // debugger;
 }
 
 function pcBlockCol(col){
@@ -150,23 +149,18 @@ function pcBlockCol(col){
  */
 function pcCheckRow(row){
     let x_count = 0;
-    let count = 0;
     for (let box = row; box < row + 3; box++){ 
         // if box contains x add 1 to x_count
         if (movesTaken.includes(box)){
-            if (checkPlayer(box) == "X") x_count++;
-            count++;
+            x_count++;
             console.log(" - x_count: " + x_count + " | index: " + movesTaken.indexOf(box));
         }
         // else {
         //     console.log(box + " not in " + movesTaken.toString());
         // }
     }
-    if (x_count == 2 && count != 3){ 
-        console.error("checkrow true");
-        debugger;
-        return true; }
-    else return false;
+    if (x_count < 2) return false;
+    else return true;
 }
 
 /**
@@ -176,18 +170,12 @@ function pcCheckRow(row){
  */
 function pcCheckCol(col){
     let x_count = 0;
-    let count = 0;
     for (let box = col; box < 10; box += 3){ 
         // if box contains x add 1 to x_count
-        if (movesTaken.includes(box)) {
-            if (checkPlayer(box) == "X") x_count++;
-            count++;
-        }
+        if (movesTaken.includes(box)) x_count++;
     }
-    if (x_count == 2 && count != 3) {
-        console.error("checkcol true");
-        return true;}
-    else return false;
+    if (x_count < 2) return false;
+    else return true;
 }
 
 /**
