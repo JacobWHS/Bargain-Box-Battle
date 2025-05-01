@@ -125,7 +125,7 @@ function pcTurn(){
         if (pcCheckCol(box)) move = parseInt(pcBlockCol(box));
         console.log(" - COL Selected Move " + move);
     }
-    if (move == -1) move = randMove();
+    if (move == -1 || isNaN(move)) move = getRndInteger(1, 9);
     placeMoveCPU(move);
     console.log(" - Attempted to place a move at " + move);
     winner = checkWinner("O");
