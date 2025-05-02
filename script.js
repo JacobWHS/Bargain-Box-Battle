@@ -69,11 +69,12 @@ bttnCont.appendChild(rstBttn);
 function placeMove(id){
     let moveID = id.dataset.address;
     moveID = parseInt(moveID);
-    goodMoves.slice(goodMoves.indexOf(moveID) - 1);
+    goodMoves.splice(goodMoves.indexOf(moveID), 1);
+    console.log(" - goodMoves: ", goodMoves);
     movesTaken.push(moveID);
     let winner = checkWinner("X");
     let textStatus = "unset status";
-    if (winner == false){
+    if (!winner && !checkWinner("O")){
         if (id.dataset.status == "-"){
             // id.innerHTML = id.innerHTML.replace("-", player);
             id.setAttribute("data-status", player);
@@ -95,13 +96,14 @@ function placeMove(id){
  * @param {integer} move 
  */
 function placeMoveCPU(move){
-    goodMoves.slice(goodMoves.indexOf(move) - 1);
+    goodMoves.splice(goodMoves.indexOf(move), 1);
+    console.log(" - goodMoves: ", goodMoves);
     movesTaken.push(move);
 
-    console.log(" - move - " + move);
+    // console.log(" - move - " + move);
     move = parseInt(move);
     const element = document.querySelector("[data-address=\"" + move + "\"]");
-    console.log(" - element = " + move);
+    // console.log(" - element = " + move);
     element.setAttribute("data-status", "O");
 }
 
@@ -111,7 +113,6 @@ function placeMoveCPU(move){
 function pcTurn(){
     console.warn("pcTurn()");
     // Full board check
-    let winner = "no winner";
     let move = -1;
     // console.log("Move is equal to -1!")
     // Check Rows
@@ -125,22 +126,21 @@ function pcTurn(){
         if (pcCheckCol(box)) move = parseInt(pcBlockCol(box));
         console.log(" - COL Selected Move " + move);
     }
-    if (move == -1 || isNaN(move)) move = getRndInteger(1, 9);
+    if (move == -1 || isNaN(move) || !goodMoves.includes(move)) move = randMove();
     placeMoveCPU(move);
     console.log(" - Attempted to place a move at " + move);
-    winner = checkWinner("O");
 }   
 
 function pcBlockRow(row){
     for (let box = row; box < row + 3; box++){
-        console.log("pcBlockRow - BOX: " + box);
+        //console.log("pcBlockRow - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
     }
 }
 
 function pcBlockCol(col){
     for (let box = col; box < 10; box += 3){
-        console.log("pcBlockCol - BOX: " + box);
+        //console.log("pcBlockCol - BOX: " + box);
         if (checkPlayer(box) == "-") return box;
     }
 }
@@ -156,7 +156,7 @@ function pcCheckRow(row){
         // if box contains x add 1 to x_count
         if (movesTaken.includes(box)){
             x_count++;
-            console.log(" - x_count: " + x_count + " | index: " + movesTaken.indexOf(box));
+            //console.log(" - x_count: " + x_count + " | index: " + movesTaken.indexOf(box));
         }
         // else {
         //     console.log(box + " not in " + movesTaken.toString());
@@ -226,9 +226,8 @@ function checkPlayer(address){
 
 function randMove(){
     let move;
-    do {
-        move = getRndInteger(1, 9);
-    } while(checkPlayer(move) != "-");
+    let ind = getRndInteger(0, goodMoves.length - 1);
+    move = goodMoves[ind];
     return move;
 }
 
@@ -245,7 +244,7 @@ function startGame(){
 /**
  * checkWinner - Checks the winner of the game based on a set of hardcoded patterns.
  * @param {string} player 
- * @returns 
+ * @returns {boolean}
  */
 function checkWinner(player){
     // Full board check
@@ -254,15 +253,14 @@ function checkWinner(player){
     while (winner == false && box < 9 && !isFull()) {
         let ctrl = boardElem.children[box].dataset.status;
         if (ctrl == player) {
-            console.error("CHECKACT CHECKING " + player);
-            if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = player;
-            if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = player;
-            if (box == 0 || box == 4 || box == 8) if (checkAct(box, player, "d")) winner = player;
-            if (box == 2 || box == 4 || box == 6) if (checkAct(box, player, "a")) winner = player;
-            console.log(" - checkWinner() winner = " + winner);
+            if (box == 0 || box == 3 || box == 6) if (checkAct(box, player)) winner = true;
+            if (box == 0 || box == 1 || box == 2) if (checkAct(box, player, "v")) winner = true;
+            if (box == 0 || box == 4 || box == 8) if (checkAct(box, player, "d")) winner = true;
+            if (box == 2 || box == 4 || box == 6) if (checkAct(box, player, "a")) winner = true;
         }
         box++;   
     }   
+    console.log(" - " + player + " Winner " + winner);
     return winner;
 }
 
@@ -272,7 +270,8 @@ function checkWinner(player){
  */
 function displayStatus(){
     if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
-    else if (winner == true) document.getElementById("textStatus").innerHTML = player + " wins!";
+    else if (checkWinner("O")) document.getElementById("textStatus").innerHTML = "O wins!";
+    else if (checkWinner("X")) document.getElementById("textStatus").innerHTML = "X wins!";
     if (winner == true){
         boardElem.style.transition = "opacity 0.5s";
         boardElem.style.opacity = 0;
@@ -282,7 +281,7 @@ function displayStatus(){
         }, 500);
         setTimeout(function() {
             boardElem.style.display = "none";
-          }, 500);
+        }, 1000);
     }
 }
 
@@ -306,7 +305,6 @@ function isFull(){
  * @returns boolean
  */
 function checkAct(box, player, type="h"){ // default param is "h" which means horizontal, i learned this from another coding language, does it work? Let's see.
-    console.log(" - Specified Act: " + type.toUpperCase());
     switch (type){
         case "h": // Horizontal
             if (boardElem.children[box + 1].dataset.status == player && boardElem.children[box + 2].dataset.status == player) return true;
