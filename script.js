@@ -11,7 +11,7 @@ var board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]];
 var player = "X";
 var fullBoard = false;
 var boardElem = document.getElementById("board");
-var bttnElem = document.getElementById("reset");
+var bttnElem = document.getElementById("cont-button");
 
 // WIN ARRAYS
 var goodMoves = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -87,7 +87,7 @@ function placeMove(id){
             textStatus = "This spot's full, please try again.";
         }
         document.getElementById("textStatus").innerHTML = textStatus;
-        // displayStatus();
+        displayStatus();
     }
 }
 
@@ -272,16 +272,20 @@ function displayStatus(){
     if (isFull()) document.getElementById("textStatus").innerHTML = "It's a tie!";
     else if (checkWinner("O")) document.getElementById("textStatus").innerHTML = "O wins!";
     else if (checkWinner("X")) document.getElementById("textStatus").innerHTML = "X wins!";
-    if (winner == true){
+    if (checkWinner("O") || checkWinner("X")){
         boardElem.style.transition = "opacity 0.5s";
         boardElem.style.opacity = 0;
         setTimeout(function() {
-            bttnElem.style.transition = "left 0.5s";
-            bttnElem.style.left = -200;
-        }, 500);
-        setTimeout(function() {
             boardElem.style.display = "none";
-        }, 1000);
+        }, 1400);
+        bttnElem.animate([
+            { top: '0px' },
+            {top: '-630px' }
+          ], {
+            duration: 1500,
+            easing: 'ease-in-out'
+          });
+
     }
 }
 
